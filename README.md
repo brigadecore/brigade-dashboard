@@ -1,4 +1,4 @@
-# Brigade Dashboard)
+# Brigade Dashboard
 
 ![build](https://badgr.brigade2.io/v1/github/checks/brigadecore/brigade-dashboard/badge.svg?appID=99005&branch=main)
 [![slack](https://img.shields.io/badge/slack-brigade-brightgreen.svg?logo=slack)](https://slack.brigade.sh)
