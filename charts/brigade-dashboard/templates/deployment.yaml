@@ -1,0 +1,114 @@
+{{- $tlsCert := "" }}
+{{- $tlsKey := "" }}
+{{- if .Values.tls.enabled }}
+  {{- if .Values.tls.generateSelfSignedCert }}
+    {{- $data := (lookup "v1" "Secret" .Release.Namespace (printf "%s-cert" (include "dashboard.fullname" . ))).data }}
+    {{- if $data }}
+      # Reuse the existing cert and key
+      {{- $tlsCert = index $data "tls.crt" }}
+      {{- $tlsKey = index $data "tls.key" }}
+    {{- else }}
+      # Generate a new cert and key
+      {{- $altName1 := include "dashboard.fullname" . }}
+      {{- $altName2 := printf "%s.%s" (include "dashboard.fullname" .) .Release.Namespace }}
+      {{- $altName3 := printf "%s.%s.svc" (include "dashboard.fullname" .) .Release.Namespace }}
+      {{- $altName4 := printf "%s.%s.svc.cluster" (include "dashboard.fullname" .) .Release.Namespace }}
+      {{- $altName5 := printf "%s.%s.svc.cluster.local" (include "dashboard.fullname" .) .Release.Namespace }}
+      {{- $cert := genSelfSignedCert .Values.host nil (list .Values.host $altName1 $altName2 $altName3 $altName4 $altName5) 3650 }}
+      {{- $tlsCert = b64enc $cert.Cert }}
+      {{- $tlsKey = b64enc $cert.Key }}
+    {{- end }}
+  {{- else if .Values.tls.cert }}
+    # Use operator supplied cert and key
+    {{- $tlsCert = .Values.tls.cert }}
+    {{- $tlsKey = .Values.tls.key }}
+  {{- end }}
+{{- end }}
+---
+{{- if and .Values.tls.enabled (or .Values.tls.generateSelfSignedCert .Values.tls.cert) }}
+apiVersion: v1
+kind: Secret
+metadata:
+  name: {{ include "dashboard.fullname" . }}-cert
+  labels:
+    {{- include "dashboard.labels" . | nindent 4 }}
+type: Opaque
+data:
+  tls.crt: {{ $tlsCert }}
+  tls.key: {{ $tlsKey }}
+{{- end }}
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "dashboard.fullname" . }}
+  labels:
+    {{- include "dashboard.labels" . | nindent 4 }}
+spec:
+  replicas: {{ .Values.replicas }}
+  selector:
+    matchLabels:
+      {{- include "dashboard.selectorLabels" . | nindent 6 }}
+      {{- include "dashboard.labels" . | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        {{- include "dashboard.selectorLabels" . | nindent 8 }}
+        {{- include "dashboard.labels" . | nindent 8 }}
+      annotations:
+        checksum/configmap: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
+        {{- if and .Values.tls.enabled (or .Values.tls.generateSelfSignedCert .Values.tls.cert) }}
+        checksum/tls-cert: {{ sha256sum $tlsCert }}
+        checksum/tls-key: {{ sha256sum $tlsKey }}
+        {{- end }}
+    spec:
+      containers:
+      - name: dashboard
+        image: {{ .Values.image.repository }}:{{ default .Chart.AppVersion .Values.image.tag }}
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
+        volumeMounts:
+        - name: config
+          mountPath: /etc/nginx/conf.d
+          readOnly: true
+        {{- if .Values.tls.enabled }}
+        - name: cert
+          mountPath: /etc/nginx/ssl
+          readOnly: true
+        {{- end }}
+        livenessProbe:
+          httpGet:
+            path: /
+            {{- if .Values.tls.enabled }}
+            port: 443
+            scheme: HTTPS
+            {{- else }}
+            port: 80
+            {{- end }}
+          periodSeconds: 10
+        readinessProbe:
+          httpGet:
+            port: 80
+            {{- if .Values.tls.enabled }}
+            port: 443
+            scheme: HTTPS
+            {{- else }}
+            port: 80
+            {{- end }}
+          periodSeconds: 10
+      volumes:
+      - name: config
+        configMap:
+          name: {{ include "dashboard.fullname" . }}
+      {{- if .Values.tls.enabled }}
+      - name: cert
+        secret:
+          secretName: {{ include "dashboard.fullname" . }}-cert
+      {{- end }}
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}

@@ -1,0 +1,12 @@
+apiVersion: v2
+name: brigade-dashboard
+description: A web-based dashboard for Brigade v2
+type: application
+version: 0.1.0
+appVersion: v0.1.0
+icon: https://raw.githubusercontent.com/brigadecore/brigade-dashboard/main/logo.png
+sources:
+- https://github.com/brigadecore/brigade-dashboard
+maintainers:
+- name: The Brigade Maintainers
+  email: cncf-brigade-maintainers@lists.cncf.io

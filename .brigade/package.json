@@ -1,0 +1,6 @@
+{
+  "name": "brigade-dashboard",
+  "dependencies": {
+    "@brigadecore/brigadier": "^2.2.0"
+  }
+}

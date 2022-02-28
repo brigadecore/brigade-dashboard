@@ -1,0 +1,71 @@
+// TODO: Need to fix this
+// @font-face {
+//   font-family: "work_sansregular";
+//   font-style: normal;
+//   font-weight: 400;
+// }
+
+$colord: #277a9f;
+$text: #647B83;
+$work: "work_sansregular", "Work Sans", "Helvetica Neue", Helvetica, Arial, Geneva, sans-serif;
+
+body {
+  font-family: $work !important;
+  padding-bottom: 80px;
+}
+
+a:not(.nav-link) {
+  color: $colord !important;
+}
+
+.page-heading, .section-heading {
+  color: $colord;
+  margin-bottom: 20px;
+  margin-top: 20px;
+}
+.page-heading {
+  font-size: 2em;
+}
+.section-heading {
+  font-size: 1.5em;
+}
+
+.card {
+  margin-bottom: 20px;
+  margin-top: 20px;
+
+  .card-header, .card-title, .card-subtitle {
+    color: $colord !important;
+  }
+
+  .card-text {
+    color: $text;
+    margin-top: 15px;
+  }
+}
+
+.nav-pills, .nav-tabs {
+  .nav-link {
+    color: $colord !important;
+    &:hover {
+      cursor: pointer;
+    }
+  }
+  
+}
+
+.nav-pills .nav-link.active {
+  background-color: white !important;
+  border: 1px solid $colord !important;
+}
+
+.btn-primary {
+  background-color: $colord !important;
+  border-color: $colord !important;
+}
+
+.table {
+  th, td {
+    color: $text !important;
+  }
+}

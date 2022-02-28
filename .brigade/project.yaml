@@ -1,0 +1,20 @@
+# yaml-language-server: $schema=https://schemas.brigade.sh/schemas-v2/project.json
+apiVersion: brigade.sh/v2
+kind: Project
+metadata:
+  id: brigade-dashboard
+description: "A web-based dashboard for Brigade v2"
+spec:
+  eventSubscriptions:
+  - source: brigade.sh/github
+    qualifiers:
+      repo: brigadecore/brigade-dashboard
+    types:
+    - ci:pipeline_requested
+    - ci:job_requested
+    - cd:pipeline_requested
+  workerTemplate:
+    git:
+      cloneURL: https://github.com/brigadecore/brigade-dashboard.git
+    jobPolicies:
+      allowPrivileged: true
