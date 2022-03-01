@@ -58,7 +58,7 @@ export default class App extends React.Component<AppProps, AppState> {
             <Container>
               <LinkContainer to="/">
                 <Navbar.Brand>
-                  <img src={logoDark} height="40"/>
+                  <img src={logoDark} height="40" alt="company logo" />
                 </Navbar.Brand>
               </LinkContainer>
               <Navbar.Toggle aria-controls="basic-navbar-nav" />
