@@ -1,4 +1,5 @@
 import React from "react"
+import Alert from 'react-bootstrap/Alert'
 
 import NextButton from "./NextButton"
 import PreviousButton from "./PreviousButton"
@@ -78,7 +79,9 @@ export default function withPagingControl<T, T1>(
     render(): React.ReactElement {
       const items = this.state.items
       if (!items) {
-        return <div/>
+        return <Alert variant="primary">
+          <Alert.Heading>No Items Were Found!</Alert.Heading>
+        </Alert>
       }
       if (items.length === 0) {
         return <Spinner/>
