@@ -7,6 +7,9 @@
 
 $colord: #277a9f;
 $text: #647B83;
+$colorm: #37b0e7;
+$colorl: #EFF4F5;
+
 $work: "work_sansregular", "Work Sans", "Helvetica Neue", Helvetica, Arial, Geneva, sans-serif;
 
 body {
@@ -68,4 +71,9 @@ a:not(.nav-link) {
   th, td {
     color: $text !important;
   }
+}
+// customize the alert colors
+.alert-primary {
+  border-color: $colorm !important;
+  background-color: $colorl !important;
 }
