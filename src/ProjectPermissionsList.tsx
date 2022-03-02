@@ -47,7 +47,7 @@ class ProjectPermissionsListItem extends React.Component<ProjectPermissionsListI
   }
   
   render(): React.ReactElement {
-    const principalLink = this.props.projectRoleAssignment.principal.type == authz.PrincipalTypeServiceAccount ? 
+    const principalLink = this.props.projectRoleAssignment.principal.type === authz.PrincipalTypeServiceAccount ? 
       "/service-accounts/" + this.props.projectRoleAssignment.principal.id :
       "/users/" + this.props.projectRoleAssignment.principal.id
     const projectLink = "/projects/" + this.props.projectRoleAssignment.projectID
