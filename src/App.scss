@@ -4,10 +4,10 @@
 //   font-style: normal;
 //   font-weight: 400;
 // }
+$colord: #277a9f;
 $colorm: #37b0e7;
 $colorl: #eff4f5;
 
-$colord: #277a9f;
 $text: #647b83;
 $work: "work_sansregular", "Work Sans", "Helvetica Neue", Helvetica, Arial,
   Geneva, sans-serif;
@@ -76,6 +76,7 @@ a:not(.nav-link) {
     color: $text !important;
   }
 }
+// customize the alert colors
 .alert-primary {
   border-color: $colorm !important;
   background-color: $colorl !important;
