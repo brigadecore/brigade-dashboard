@@ -18,7 +18,7 @@ export default class ContributeCard extends React.Component {
             <li>
               <FontAwesomeIcon icon={faGithub}/>
               &nbsp;&nbsp;
-              <a href="https://github.com/brigadecore" target="_blank">Check us out on GitHub!</a>
+              <a href="https://github.com/brigadecore" target="_blank" rel="noreferrer">Check us out on GitHub!</a>
             </li>
           </ul>
         </Card.Body>
