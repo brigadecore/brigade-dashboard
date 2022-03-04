@@ -50,7 +50,7 @@ class SystemPermissionsListItem extends React.Component<SystemPermissionsListIte
   }
 
   render(): React.ReactElement {
-    const linkTo = this.props.roleAssignment.principal.type == authz.PrincipalTypeServiceAccount ? 
+    const linkTo = this.props.roleAssignment.principal.type === authz.PrincipalTypeServiceAccount ? 
       "/service-accounts/" + this.props.roleAssignment.principal.id :
       "/users/" + this.props.roleAssignment.principal.id
     return (
