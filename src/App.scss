@@ -4,10 +4,13 @@
 //   font-style: normal;
 //   font-weight: 400;
 // }
+$colorm: #37b0e7;
+$colorl: #eff4f5;
 
 $colord: #277a9f;
-$text: #647B83;
-$work: "work_sansregular", "Work Sans", "Helvetica Neue", Helvetica, Arial, Geneva, sans-serif;
+$text: #647b83;
+$work: "work_sansregular", "Work Sans", "Helvetica Neue", Helvetica, Arial,
+  Geneva, sans-serif;
 
 body {
   font-family: $work !important;
@@ -18,7 +21,8 @@ a:not(.nav-link) {
   color: $colord !important;
 }
 
-.page-heading, .section-heading {
+.page-heading,
+.section-heading {
   color: $colord;
   margin-bottom: 20px;
   margin-top: 20px;
@@ -34,7 +38,9 @@ a:not(.nav-link) {
   margin-bottom: 20px;
   margin-top: 20px;
 
-  .card-header, .card-title, .card-subtitle {
+  .card-header,
+  .card-title,
+  .card-subtitle {
     color: $colord !important;
   }
 
@@ -44,14 +50,14 @@ a:not(.nav-link) {
   }
 }
 
-.nav-pills, .nav-tabs {
+.nav-pills,
+.nav-tabs {
   .nav-link {
     color: $colord !important;
     &:hover {
       cursor: pointer;
     }
   }
-  
 }
 
 .nav-pills .nav-link.active {
@@ -65,7 +71,12 @@ a:not(.nav-link) {
 }
 
 .table {
-  th, td {
+  th,
+  td {
     color: $text !important;
   }
+}
+.alert-primary {
+  border-color: $colorm !important;
+  background-color: $colorl !important;
 }
