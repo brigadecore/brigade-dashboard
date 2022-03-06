@@ -91,8 +91,8 @@ export default class App extends React.Component<AppProps, AppState> {
               loggedIn ? (
                 <Outlet/>
               ) : (
-                <div>
-                  <Alert variant="primary">Log in to see this content.</Alert>
+                <div className="homeContainer">
+                  <Alert variant="primary" className="loginAlert">Log in to see this content.</Alert>
                   <Home/>
                 </div>
               )
