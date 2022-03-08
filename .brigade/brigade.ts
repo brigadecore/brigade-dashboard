@@ -4,6 +4,7 @@ const dindImg = "docker:20.10.9-dind"
 const dockerClientImg = "brigadecore/docker-tools:v0.1.0"
 const helmImg = "brigadecore/helm-tools:v0.4.0"
 const localPath = "/workspaces/brigade-github-gateway"
+const nodeImg = "node:16.13.2-alpine3.15"
 
 // MakeTargetJob is just a job wrapper around one or more make targets.
 class MakeTargetJob extends Job {
@@ -94,6 +95,19 @@ class PushImageJob extends BuildImageJob {
 // job, this allows us to easily find that job by name.
 const jobs: {[key: string]: (event: Event) => Job } = {}
 
+// Basic tests:
+
+const lintJobName = "lint"
+const lintJob = (event: Event) => {
+  const job = new Job(lintJobName, nodeImg, event)
+  job.primaryContainer.sourceMountPath = localPath
+  job.primaryContainer.workingDirectory = localPath
+  job.primaryContainer.command = ["sh"]
+  job.primaryContainer.arguments = ["-c", "yarn install && yarn lint"]
+  return job
+}
+jobs[lintJobName] = lintJob
+
 // Build / publish stuff:
 
 const buildJobName = "build"
@@ -120,7 +134,10 @@ const publishChartJob = (event: Event, version: string) => {
 }
 
 events.on("brigade.sh/github", "ci:pipeline_requested", async event => {
-  await buildJob(event).run()
+  await new SerialGroup(
+    lintJob(event),
+    buildJob(event)
+  ).run()
 })
 
 // This event indicates a specific job is to be re-run.
