@@ -114,8 +114,8 @@ IMAGE_PULL_POLICY ?= Always
 
 .PHONY: hack-deploy
 hack-deploy:
-ifndef BRIGADE_API_ADDRESS
-	@echo "BRIGADE_API_ADDRESS must be defined" && false
+ifndef REACT_APP_BRIGADE_API_ADDRESS
+	@echo "REACT_APP_BRIGADE_API_ADDRESS must be defined" && false
 endif
 	helm dep up charts/brigade-dashboard && \
 	helm upgrade brigade-dashboard charts/brigade-dashboard \
@@ -126,7 +126,7 @@ endif
 		--set image.repository=$(DOCKER_IMAGE_NAME) \
 		--set image.tag=$(IMMUTABLE_DOCKER_TAG) \
 		--set image.pullPolicy=$(IMAGE_PULL_POLICY) \
-		--set brigade.apiAddress=$(BRIGADE_API_ADDRESS)
+		--set brigade.apiAddress=$(REACT_APP_BRIGADE_API_ADDRESS)
 
 .PHONY: hack
 hack: hack-push hack-deploy
