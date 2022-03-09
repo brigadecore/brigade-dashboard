@@ -4,7 +4,7 @@ import ReactDOM from "react-dom"
 
 import { BrowserRouter, Routes, Route } from "react-router-dom"
 
-import App from './App'
+import App from "./App"
 import Event from "./Event"
 import Events from "./Events"
 import Home from "./Home"
@@ -38,5 +38,5 @@ ReactDOM.render(
       </Routes>
     </BrowserRouter>
   </React.StrictMode>,
-  document.getElementById('root')
+  document.getElementById("root")
 )

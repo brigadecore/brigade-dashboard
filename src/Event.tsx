@@ -89,33 +89,33 @@ class EventSummary extends React.Component<EventSummaryProps> {
     const event = this.props.event
     let phaseColor = "light"
     switch(event.worker?.status.phase) {
-      case core.WorkerPhase.Aborted:
-        phaseColor = "danger"
-        break
-      case core.WorkerPhase.Canceled:
-        phaseColor = "danger"
-        break
-      case core.WorkerPhase.Failed:
-        phaseColor = "danger"
-        break
-      case core.WorkerPhase.Pending:
-        phaseColor = "warning"
-        break
-      case core.WorkerPhase.Running:
-        phaseColor = "warning"
-        break
-      case core.WorkerPhase.SchedulingFailed:
-        phaseColor = "danger"
-        break
-      case core.WorkerPhase.Starting:
-        phaseColor = "goldenrod"
-        break
-      case core.WorkerPhase.Succeeded:
-        phaseColor = "success"
-        break
-      case core.WorkerPhase.TimedOut:
-        phaseColor = "danger"
-        break
+    case core.WorkerPhase.Aborted:
+      phaseColor = "danger"
+      break
+    case core.WorkerPhase.Canceled:
+      phaseColor = "danger"
+      break
+    case core.WorkerPhase.Failed:
+      phaseColor = "danger"
+      break
+    case core.WorkerPhase.Pending:
+      phaseColor = "warning"
+      break
+    case core.WorkerPhase.Running:
+      phaseColor = "warning"
+      break
+    case core.WorkerPhase.SchedulingFailed:
+      phaseColor = "danger"
+      break
+    case core.WorkerPhase.Starting:
+      phaseColor = "goldenrod"
+      break
+    case core.WorkerPhase.Succeeded:
+      phaseColor = "success"
+      break
+    case core.WorkerPhase.TimedOut:
+      phaseColor = "danger"
+      break
     }
     return (
       <Container>
@@ -397,33 +397,33 @@ class JobSummary extends React.Component<JobSummaryProps> {
     const job = this.props.job
     let phaseColor = "light"
     switch(job.status?.phase) {
-      case core.JobPhase.Aborted:
-        phaseColor = "danger"
-        break
-      case core.JobPhase.Canceled:
-        phaseColor = "danger"
-        break
-      case core.JobPhase.Failed:
-        phaseColor = "danger"
-        break
-      case core.JobPhase.Pending:
-        phaseColor = "warning"
-        break
-      case core.JobPhase.Running:
-        phaseColor = "warning"
-        break
-      case core.JobPhase.SchedulingFailed:
-        phaseColor = "danger"
-        break
-      case core.JobPhase.Starting:
-        phaseColor = "goldenrod"
-        break
-      case core.JobPhase.Succeeded:
-        phaseColor = "success"
-        break
-      case core.JobPhase.TimedOut:
-        phaseColor = "danger"
-        break
+    case core.JobPhase.Aborted:
+      phaseColor = "danger"
+      break
+    case core.JobPhase.Canceled:
+      phaseColor = "danger"
+      break
+    case core.JobPhase.Failed:
+      phaseColor = "danger"
+      break
+    case core.JobPhase.Pending:
+      phaseColor = "warning"
+      break
+    case core.JobPhase.Running:
+      phaseColor = "warning"
+      break
+    case core.JobPhase.SchedulingFailed:
+      phaseColor = "danger"
+      break
+    case core.JobPhase.Starting:
+      phaseColor = "goldenrod"
+      break
+    case core.JobPhase.Succeeded:
+      phaseColor = "success"
+      break
+    case core.JobPhase.TimedOut:
+      phaseColor = "danger"
+      break
     }
     return (
       <div>
@@ -488,9 +488,9 @@ class JobSummary extends React.Component<JobSummaryProps> {
               <td>{job.spec.primaryContainer.image}</td>
             </tr>
             {
-              Object.entries(job.spec.sidecarContainers || {}).map((entry: any[]) => (
+              Object.entries(job.spec.sidecarContainers || {}).map((entry: unknown[]) => (
                 <tr>
-                  <td>{entry[0]}</td>
+                  <td>{entry[0] as string}</td>
                   <td>{(entry[1] as core.ContainerSpec).image}</td>
                 </tr>
               ))

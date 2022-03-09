@@ -60,7 +60,7 @@ export default function withPagingControl<T, T1>(
     }
 
     fetchNextPage = async () => {
-      let nextContinueVal = this.state.nextContinueVal
+      const nextContinueVal = this.state.nextContinueVal
       if (nextContinueVal) {
         const prevContinueVals = this.state.prevContinueVals
         prevContinueVals.push(this.state.currentContinueVal)

@@ -34,12 +34,12 @@ class ProjectPermissionsListItem extends React.Component<ProjectPermissionsListI
   async componentDidMount(): Promise<void> {
     let locked: boolean | null = null
     switch (this.props.projectRoleAssignment.principal.type) {
-      case authz.PrincipalTypeServiceAccount:
-        locked = (await getClient().authn().serviceAccounts().get(this.props.projectRoleAssignment.principal.id)).locked? true : false
-        break
-      case authz.PrincipalTypeUser:
-        locked = (await getClient().authn().users().get(this.props.projectRoleAssignment.principal.id)).locked? true : false
-        break
+    case authz.PrincipalTypeServiceAccount:
+      locked = (await getClient().authn().serviceAccounts().get(this.props.projectRoleAssignment.principal.id)).locked? true : false
+      break
+    case authz.PrincipalTypeUser:
+      locked = (await getClient().authn().users().get(this.props.projectRoleAssignment.principal.id)).locked? true : false
+      break
     }
     this.setState({
       locked: locked

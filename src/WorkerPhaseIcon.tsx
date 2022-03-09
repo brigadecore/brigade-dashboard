@@ -20,42 +20,42 @@ export default class WorkerPhaseIcon extends React.Component<WorkerPhaseIconProp
     let icon = faQuestion
     let color = "dimgray"
     switch(this.props.phase) {
-      case core.WorkerPhase.Aborted:
-        icon = faTimes
-        color = "firebrick"
-        break
-      case core.WorkerPhase.Canceled:
-        icon = faTimes
-        color = "firebrick"
-        break
-      case core.WorkerPhase.Failed:
-        icon = faTimes
-        color = "firebrick"
-        break
-      case core.WorkerPhase.Pending:
-        icon = faClock
-        color = "goldenrod"
-        break
-      case core.WorkerPhase.Running:
-        icon = faPlay
-        color = "goldenrod"
-        break
-      case core.WorkerPhase.SchedulingFailed:
-        icon = faTimes
-        color = "firebrick"
-        break
-      case core.WorkerPhase.Starting:
-        icon = faPlay
-        color = "goldenrod"
-        break
-      case core.WorkerPhase.Succeeded:
-        icon = faCheck
-        color = "green"
-        break
-      case core.WorkerPhase.TimedOut:
-        icon = faTimes
-        color = "firebrick"
-        break
+    case core.WorkerPhase.Aborted:
+      icon = faTimes
+      color = "firebrick"
+      break
+    case core.WorkerPhase.Canceled:
+      icon = faTimes
+      color = "firebrick"
+      break
+    case core.WorkerPhase.Failed:
+      icon = faTimes
+      color = "firebrick"
+      break
+    case core.WorkerPhase.Pending:
+      icon = faClock
+      color = "goldenrod"
+      break
+    case core.WorkerPhase.Running:
+      icon = faPlay
+      color = "goldenrod"
+      break
+    case core.WorkerPhase.SchedulingFailed:
+      icon = faTimes
+      color = "firebrick"
+      break
+    case core.WorkerPhase.Starting:
+      icon = faPlay
+      color = "goldenrod"
+      break
+    case core.WorkerPhase.Succeeded:
+      icon = faCheck
+      color = "green"
+      break
+    case core.WorkerPhase.TimedOut:
+      icon = faTimes
+      color = "firebrick"
+      break
     }
     return <FontAwesomeIcon icon={icon} color={color}/>
   }

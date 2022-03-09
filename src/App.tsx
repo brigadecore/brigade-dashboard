@@ -16,15 +16,13 @@ import LoginControl from "./LoginControl"
 import "./App.scss"
 import logoDark from "./images/logo-dark.png"
 
-interface AppProps {}
-
 interface AppState {
   loggedIn: boolean
 }
 
-export default class App extends React.Component<AppProps, AppState> {
+export default class App extends React.Component<unknown, AppState> {
 
-  constructor(props: AppProps) {
+  constructor(props: unknown) {
     super(props)
     this.state = {
       loggedIn: localStorage.getItem(consts.brigadeAPITokenKey) ? true : false
