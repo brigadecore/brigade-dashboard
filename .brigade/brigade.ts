@@ -124,6 +124,18 @@ const lintJob = (event: Event) => {
 }
 jobs[lintJobName] = lintJob
 
+const auditJobName = "audit"
+const auditJob = (event: Event) => {
+  const job = new Job(auditJobName, nodeImg, event)
+  job.primaryContainer.sourceMountPath = localPath
+  job.primaryContainer.workingDirectory = localPath
+  job.primaryContainer.command = ["sh"]
+  job.primaryContainer.arguments = ["-c", "yarn install && yarn audit"]
+  job.fallible = true
+  return job
+}
+jobs[auditJobName] = auditJob
+
 // Build / publish stuff:
 
 const buildJobName = "build"
@@ -151,7 +163,7 @@ const publishChartJob = (event: Event, version: string) => {
 
 events.on("brigade.sh/github", "ci:pipeline_requested", async (event) => {
   await Job.sequence(
-    Job.concurrent(styleCheckJob(event), lintJob(event)),
+    Job.concurrent(styleCheckJob(event), lintJob(event), auditJob(event)),
     buildJob(event)
   ).run()
 })
