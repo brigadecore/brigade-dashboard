@@ -10,9 +10,11 @@ interface NextButtonProps {
 }
 
 export default class NextButton extends React.Component<NextButtonProps> {
-
   render(): React.ReactElement {
-    return <Button onClick={this.props.onClick}>Next <FontAwesomeIcon icon={faChevronRight}/></Button>
+    return (
+      <Button onClick={this.props.onClick}>
+        Next <FontAwesomeIcon icon={faChevronRight} />
+      </Button>
+    )
   }
-
 }

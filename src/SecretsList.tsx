@@ -14,7 +14,6 @@ interface SecretListItemProps {
 }
 
 class SecretListItem extends React.Component<SecretListItemProps> {
-
   render(): React.ReactElement {
     return (
       <tr>
@@ -23,7 +22,6 @@ class SecretListItem extends React.Component<SecretListItemProps> {
       </tr>
     )
   }
-
 }
 
 interface SecretListProps {
@@ -31,7 +29,10 @@ interface SecretListProps {
 }
 
 export default withPagingControl(
-  (props: SecretListProps, continueVal: string): Promise<meta.List<core.Secret>>  => {
+  (
+    props: SecretListProps,
+    continueVal: string
+  ): Promise<meta.List<core.Secret>> => {
     return getClient().core().projects().secrets().list(props.projectID, {
       continue: continueVal,
       limit: secretListPageSize
@@ -47,11 +48,9 @@ export default withPagingControl(
           </tr>
         </thead>
         <tbody>
-          {
-            secrets.map((secret: core.Secret) => (
-              <SecretListItem key={secret.key} secret={secret}/>
-            ))
-          }
+          {secrets.map((secret: core.Secret) => (
+            <SecretListItem key={secret.key} secret={secret} />
+          ))}
         </tbody>
       </Table>
     )

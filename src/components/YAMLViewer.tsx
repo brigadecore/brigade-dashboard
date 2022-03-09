@@ -13,7 +13,6 @@ interface YAMLViewerProps<T> {
 }
 
 export default class YAMLViewer<T> extends React.Component<YAMLViewerProps<T>> {
-
   render(): React.ReactElement {
     return (
       <SyntaxHighlighter language="yaml" style={style}>
@@ -21,5 +20,4 @@ export default class YAMLViewer<T> extends React.Component<YAMLViewerProps<T>> {
       </SyntaxHighlighter>
     )
   }
-
 }

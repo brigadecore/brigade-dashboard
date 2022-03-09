@@ -8,12 +8,10 @@ interface LockIconProps {
 }
 
 export default class LockIcon extends React.Component<LockIconProps> {
-
   render(): React.ReactElement {
-    if (this.props.locked) { 
-      return <FontAwesomeIcon icon={faLock} color="firebrick"/>
+    if (this.props.locked) {
+      return <FontAwesomeIcon icon={faLock} color="firebrick" />
     }
-    return <FontAwesomeIcon icon={faUnlockAlt} color="green"/>
+    return <FontAwesomeIcon icon={faUnlockAlt} color="green" />
   }
-
 }

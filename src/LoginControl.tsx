@@ -12,20 +12,22 @@ interface LoginControlState {
   loggedIn: boolean
 }
 
-export default class LoginControl extends React.Component<LoginControlProps, LoginControlState> {
-
+export default class LoginControl extends React.Component<
+  LoginControlProps,
+  LoginControlState
+> {
   constructor(props: LoginControlProps) {
     super(props)
-    this.state = {loggedIn: props.loggedIn}
+    this.state = { loggedIn: props.loggedIn }
   }
 
   handleLogin = () => {
-    this.setState({loggedIn: true})
+    this.setState({ loggedIn: true })
     this.props.onLogin()
   }
 
   handleLogout = () => {
-    this.setState({loggedIn: false})
+    this.setState({ loggedIn: false })
     this.props.onLogout()
   }
 
@@ -33,11 +35,18 @@ export default class LoginControl extends React.Component<LoginControlProps, Log
     const loggedIn = this.state.loggedIn
     let button
     if (!loggedIn) {
-      button = <Button variant="outline-light" onClick={this.handleLogin}>Login</Button>
+      button = (
+        <Button variant="outline-light" onClick={this.handleLogin}>
+          Login
+        </Button>
+      )
     } else {
-      button = <Button variant="outline-light" onClick={this.handleLogout}>Logout</Button>
+      button = (
+        <Button variant="outline-light" onClick={this.handleLogout}>
+          Logout
+        </Button>
+      )
     }
     return <div>{button}</div>
   }
-
 }

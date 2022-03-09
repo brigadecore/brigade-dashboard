@@ -23,8 +23,10 @@ interface SystemPermissionsListItemState {
   locked: boolean | null
 }
 
-class SystemPermissionsListItem extends React.Component<SystemPermissionsListItemProps, SystemPermissionsListItemState> {
-
+class SystemPermissionsListItem extends React.Component<
+  SystemPermissionsListItemProps,
+  SystemPermissionsListItemState
+> {
   constructor(props: SystemPermissionsListItemProps) {
     super(props)
     this.state = {
@@ -36,12 +38,26 @@ class SystemPermissionsListItem extends React.Component<SystemPermissionsListIte
     if (!this.props.suppressPrincipalColumn) {
       let locked: boolean | null = null
       switch (this.props.roleAssignment.principal.type) {
-      case authz.PrincipalTypeServiceAccount:
-        locked = (await getClient().authn().serviceAccounts().get(this.props.roleAssignment.principal.id)).locked? true : false
-        break
-      case authz.PrincipalTypeUser:
-        locked = (await getClient().authn().users().get(this.props.roleAssignment.principal.id)).locked? true : false
-        break
+        case authz.PrincipalTypeServiceAccount:
+          locked = (
+            await getClient()
+              .authn()
+              .serviceAccounts()
+              .get(this.props.roleAssignment.principal.id)
+          ).locked
+            ? true
+            : false
+          break
+        case authz.PrincipalTypeUser:
+          locked = (
+            await getClient()
+              .authn()
+              .users()
+              .get(this.props.roleAssignment.principal.id)
+          ).locked
+            ? true
+            : false
+          break
       }
       this.setState({
         locked: locked
@@ -50,14 +66,20 @@ class SystemPermissionsListItem extends React.Component<SystemPermissionsListIte
   }
 
   render(): React.ReactElement {
-    const linkTo = this.props.roleAssignment.principal.type === authz.PrincipalTypeServiceAccount ? 
-      "/service-accounts/" + this.props.roleAssignment.principal.id :
-      "/users/" + this.props.roleAssignment.principal.id
+    const linkTo =
+      this.props.roleAssignment.principal.type ===
+      authz.PrincipalTypeServiceAccount
+        ? "/service-accounts/" + this.props.roleAssignment.principal.id
+        : "/users/" + this.props.roleAssignment.principal.id
     return (
       <tr>
-        { this.props.suppressPrincipalColumn ? null : (
+        {this.props.suppressPrincipalColumn ? null : (
           <td>
-            <PrincipalIcon principalType={this.props.roleAssignment.principal.type} locked={this.state.locked}/>&nbsp;&nbsp;
+            <PrincipalIcon
+              principalType={this.props.roleAssignment.principal.type}
+              locked={this.state.locked}
+            />
+            &nbsp;&nbsp;
             <Link to={linkTo}>{this.props.roleAssignment.principal.id}</Link>
           </td>
         )}
@@ -66,7 +88,6 @@ class SystemPermissionsListItem extends React.Component<SystemPermissionsListIte
       </tr>
     )
   }
-
 }
 
 interface SystemPermissionsListProps {
@@ -74,33 +95,43 @@ interface SystemPermissionsListProps {
 }
 
 export default withPagingControl(
-  (props: SystemPermissionsListProps, continueVal: string): Promise<meta.List<libAuthz.RoleAssignment>>  => {
+  (
+    props: SystemPermissionsListProps,
+    continueVal: string
+  ): Promise<meta.List<libAuthz.RoleAssignment>> => {
     return getClient().authz().roleAssignments().list(props.selector, {
       continue: continueVal,
       limit: permissionsListPageSize
     })
   },
-  (roleAssignments: libAuthz.RoleAssignment[], props: SystemPermissionsListProps): React.ReactElement => {
+  (
+    roleAssignments: libAuthz.RoleAssignment[],
+    props: SystemPermissionsListProps
+  ): React.ReactElement => {
     const suppressPrincipalColumn = props.selector?.principal ? true : false
     return (
       <Table striped bordered hover responsive>
         <thead>
           <tr>
-            { suppressPrincipalColumn ? null : <th>Principal</th> }
+            {suppressPrincipalColumn ? null : <th>Principal</th>}
             <th>Role</th>
             <th>Scope</th>
           </tr>
         </thead>
         <tbody>
-          {
-            roleAssignments.map((roleAssignment: libAuthz.RoleAssignment) => (
-              <SystemPermissionsListItem 
-                key={roleAssignment.principal.type + ":" + roleAssignment.principal.id + ":" + roleAssignment.role}
-                roleAssignment={roleAssignment}
-                suppressPrincipalColumn={suppressPrincipalColumn}
-              />
-            ))
-          }
+          {roleAssignments.map((roleAssignment: libAuthz.RoleAssignment) => (
+            <SystemPermissionsListItem
+              key={
+                roleAssignment.principal.type +
+                ":" +
+                roleAssignment.principal.id +
+                ":" +
+                roleAssignment.role
+              }
+              roleAssignment={roleAssignment}
+              suppressPrincipalColumn={suppressPrincipalColumn}
+            />
+          ))}
         </tbody>
       </Table>
     )
