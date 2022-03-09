@@ -39,6 +39,8 @@
     "build": "react-app-rewired build",
     "test": "react-app-rewired test",
     "eject": "react-scripts eject",
+    "style:check": "prettier --check .",
+    "style:fix": "prettier --write .",
     "lint": "eslint src/"
   },
   "eslintConfig": {
@@ -63,6 +65,8 @@
     "@typescript-eslint/eslint-plugin": "^5.14.0",
     "@typescript-eslint/parser": "^5.14.0",
     "eslint": "^8.10.0",
+    "eslint-config-prettier": "^8.5.0",
+    "prettier": "2.5.1",
     "react-app-rewired": "^2.1.9"
   }
 }

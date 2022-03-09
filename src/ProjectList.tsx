@@ -22,8 +22,10 @@ interface ProjectListItemState {
   lastEventWorkerPhase?: core.WorkerPhase | null
 }
 
-class ProjectListItem extends React.Component<ProjectListItemProps, ProjectListItemState> {
-
+class ProjectListItem extends React.Component<
+  ProjectListItemProps,
+  ProjectListItemState
+> {
   constructor(props: ProjectListItemProps) {
     super(props)
     this.state = {}
@@ -34,7 +36,8 @@ class ProjectListItem extends React.Component<ProjectListItemProps, ProjectListI
       projectID: this.props.project.metadata.id
     })
     this.setState({
-      lastEventWorkerPhase: events.items?.length > 0 ? events.items[0].worker?.status.phase : null,
+      lastEventWorkerPhase:
+        events.items?.length > 0 ? events.items[0].worker?.status.phase : null
     })
   }
 
@@ -43,7 +46,8 @@ class ProjectListItem extends React.Component<ProjectListItemProps, ProjectListI
     return (
       <tr>
         <td>
-          <WorkerPhaseIcon phase={this.state.lastEventWorkerPhase}/>&nbsp;&nbsp;
+          <WorkerPhaseIcon phase={this.state.lastEventWorkerPhase} />
+          &nbsp;&nbsp;
           <Link to={linkTo}>{this.props.project.metadata.id}</Link>
         </td>
         <td>{this.props.project.description}</td>
@@ -51,15 +55,17 @@ class ProjectListItem extends React.Component<ProjectListItemProps, ProjectListI
       </tr>
     )
   }
-
 }
 
 export default withPagingControl(
-  (props: unknown, continueVal: string): Promise<meta.List<core.Project>>  => {
-    return getClient().core().projects().list({}, {
-      continue: continueVal,
-      limit: projectListPageSize
-    })
+  (props: unknown, continueVal: string): Promise<meta.List<core.Project>> => {
+    return getClient().core().projects().list(
+      {},
+      {
+        continue: continueVal,
+        limit: projectListPageSize
+      }
+    )
   },
   (projects: core.Project[]): React.ReactElement => {
     return (
@@ -72,11 +78,9 @@ export default withPagingControl(
           </tr>
         </thead>
         <tbody>
-          {
-            projects.map((project: core.Project) => (
-              <ProjectListItem key={project.metadata.id} project={project}/>
-            ))
-          }
+          {projects.map((project: core.Project) => (
+            <ProjectListItem key={project.metadata.id} project={project} />
+          ))}
         </tbody>
       </Table>
     )

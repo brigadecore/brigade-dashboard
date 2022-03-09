@@ -19,10 +19,16 @@ interface ServiceAccountListItemProps {
 }
 
 class ServiceAccountListItem extends React.Component<ServiceAccountListItemProps> {
-
   refresh = async () => {
     this.setState({
-      locked: (await getClient().authn().serviceAccounts().get(this.props.serviceAccount.metadata.id)).locked ? true : false
+      locked: (
+        await getClient()
+          .authn()
+          .serviceAccounts()
+          .get(this.props.serviceAccount.metadata.id)
+      ).locked
+        ? true
+        : false
     })
   }
 
@@ -36,22 +42,31 @@ class ServiceAccountListItem extends React.Component<ServiceAccountListItemProps
     return (
       <tr>
         <td>
-          <LockIcon locked={serviceAccount.locked ? true : false}/>&nbsp;&nbsp;
+          <LockIcon locked={serviceAccount.locked ? true : false} />
+          &nbsp;&nbsp;
           <Link to={linkTo}>{this.props.serviceAccount.metadata.id}</Link>
         </td>
         <td>{this.props.serviceAccount.description}</td>
-        <td>{moment(this.props.serviceAccount.metadata.created).fromNow(true)}</td>
+        <td>
+          {moment(this.props.serviceAccount.metadata.created).fromNow(true)}
+        </td>
       </tr>
     )
   }
 }
 
 export default withPagingControl(
-  (props: unknown, continueVal: string): Promise<meta.List<authn.ServiceAccount>>  => {
-    return getClient().authn().serviceAccounts().list({}, {
-      continue: continueVal,
-      limit: serviceAccountListPageSize
-    })
+  (
+    props: unknown,
+    continueVal: string
+  ): Promise<meta.List<authn.ServiceAccount>> => {
+    return getClient().authn().serviceAccounts().list(
+      {},
+      {
+        continue: continueVal,
+        limit: serviceAccountListPageSize
+      }
+    )
   },
   (serviceAccounts: authn.ServiceAccount[]): React.ReactElement => {
     return (
@@ -64,11 +79,12 @@ export default withPagingControl(
           </tr>
         </thead>
         <tbody>
-          {
-            serviceAccounts.map((serviceAccount: authn.ServiceAccount) => (
-              <ServiceAccountListItem key={serviceAccount.metadata.id} serviceAccount={serviceAccount}/>
-            ))
-          }
+          {serviceAccounts.map((serviceAccount: authn.ServiceAccount) => (
+            <ServiceAccountListItem
+              key={serviceAccount.metadata.id}
+              serviceAccount={serviceAccount}
+            />
+          ))}
         </tbody>
       </Table>
     )

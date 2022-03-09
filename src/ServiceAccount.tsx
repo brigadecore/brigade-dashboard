@@ -26,8 +26,10 @@ interface ServiceAccountState {
 }
 
 // TODO: Need to make this component auto-refresh
-class ServiceAccount extends React.Component<ServiceAccountProps, ServiceAccountState> {
-
+class ServiceAccount extends React.Component<
+  ServiceAccountProps,
+  ServiceAccountState
+> {
   constructor(props: ServiceAccountProps) {
     super(props)
     this.state = {}
@@ -35,38 +37,51 @@ class ServiceAccount extends React.Component<ServiceAccountProps, ServiceAccount
 
   async componentDidMount(): Promise<void> {
     this.setState({
-      serviceAccount: await getClient().authn().serviceAccounts().get(this.props.id)
+      serviceAccount: await getClient()
+        .authn()
+        .serviceAccounts()
+        .get(this.props.id)
     })
   }
 
   render(): React.ReactElement {
     const serviceAccount = this.state.serviceAccount
     if (!serviceAccount) {
-      return <Spinner/>
+      return <Spinner />
     }
     return (
       <div>
         <h1 className="page-heading">{serviceAccount?.metadata.id}</h1>
         <Tabs defaultActiveKey="summary" className="mb-3" mountOnEnter={true}>
           <Tab eventKey="summary" title="Summary">
-            <ServiceAccountSummary serviceAccount={serviceAccount}/>
+            <ServiceAccountSummary serviceAccount={serviceAccount} />
           </Tab>
           <Tab eventKey="system-permissions" title="System Permissions">
-            <SystemPermissionsList selector={{principal: {type: authz.PrincipalTypeServiceAccount, id: this.props.id}}}/>
+            <SystemPermissionsList
+              selector={{
+                principal: {
+                  type: authz.PrincipalTypeServiceAccount,
+                  id: this.props.id
+                }
+              }}
+            />
           </Tab>
           <Tab eventKey="project-permissions" title="Project Permissions">
-            <ProjectPermissionsList selector={{principal: {type: authz.PrincipalTypeUser, id: this.props.id}}}/>
+            <ProjectPermissionsList
+              selector={{
+                principal: { type: authz.PrincipalTypeUser, id: this.props.id }
+              }}
+            />
           </Tab>
         </Tabs>
       </div>
     )
   }
-
 }
 
 export default function RoutedServiceAccount(): React.ReactElement {
   const params: any = useParams() // eslint-disable-line @typescript-eslint/no-explicit-any
-  return <ServiceAccount id={params.id}/>
+  return <ServiceAccount id={params.id} />
 }
 
 interface ServiceAccountSummaryProps {
@@ -74,13 +89,12 @@ interface ServiceAccountSummaryProps {
 }
 
 class ServiceAccountSummary extends React.Component<ServiceAccountSummaryProps> {
-
   render(): React.ReactElement {
     const serviceAccount = this.props.serviceAccount
     return (
       <Card border={serviceAccount.locked ? "danger" : "success"} bg="light">
         <Card.Header>
-          <LockIcon locked={serviceAccount.locked ? true : false}/>
+          <LockIcon locked={serviceAccount.locked ? true : false} />
           &nbsp;&nbsp;
           {serviceAccount?.metadata.id}
         </Card.Header>
@@ -93,7 +107,11 @@ class ServiceAccountSummary extends React.Component<ServiceAccountSummaryProps> 
               </tr>
               <tr>
                 <th>Created</th>
-                <td>{moment(serviceAccount.metadata.created).format("YYYY-MM-DD HH:mm:ss Z")}</td>
+                <td>
+                  {moment(serviceAccount.metadata.created).format(
+                    "YYYY-MM-DD HH:mm:ss Z"
+                  )}
+                </td>
               </tr>
             </tbody>
           </Table>
@@ -101,5 +119,4 @@ class ServiceAccountSummary extends React.Component<ServiceAccountSummaryProps> 
       </Card>
     )
   }
-
 }

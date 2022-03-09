@@ -15,7 +15,7 @@ interface Page<T> {
 
 interface PagingControlState<T> {
   prevContinueVals: string[]
-  currentContinueVal: string,
+  currentContinueVal: string
   items: T[]
   nextContinueVal?: string
 }
@@ -25,9 +25,7 @@ export default function withPagingControl<T, T1>(
   fetch: (props: T, continueVal: string) => Promise<Page<T1>>,
   render: (items: T1[], props: T) => React.ReactElement
 ) {
-
   return class extends React.Component<T, PagingControlState<T1>> {
-    
     constructor(props: T) {
       super(props)
       this.state = {
@@ -41,7 +39,8 @@ export default function withPagingControl<T, T1>(
       const page = await fetch(this.props, "")
       this.setState({
         items: page.items,
-        nextContinueVal: page.metadata.continue === "" ? undefined : page.metadata.continue
+        nextContinueVal:
+          page.metadata.continue === "" ? undefined : page.metadata.continue
       })
     }
 
@@ -54,7 +53,8 @@ export default function withPagingControl<T, T1>(
           prevContinueVals: prevContinueVals,
           currentContinueVal: currentContinueVal,
           items: page.items,
-          nextContinueVal: page.metadata.continue === "" ? undefined : page.metadata.continue
+          nextContinueVal:
+            page.metadata.continue === "" ? undefined : page.metadata.continue
         })
       }
     }
@@ -70,7 +70,8 @@ export default function withPagingControl<T, T1>(
           prevContinueVals: prevContinueVals,
           currentContinueVal: currentContinueVal,
           items: page.items,
-          nextContinueVal: page.metadata.continue === "" ? undefined : page.metadata.continue
+          nextContinueVal:
+            page.metadata.continue === "" ? undefined : page.metadata.continue
         })
       }
     }
@@ -78,24 +79,22 @@ export default function withPagingControl<T, T1>(
     render(): React.ReactElement {
       const items = this.state.items
       if (!items) {
-        return <div/>
+        return <div />
       }
       if (items.length === 0) {
-        return <Spinner/>
+        return <Spinner />
       }
       const hasPrev = this.state.prevContinueVals.length > 0
       const hasMore = this.state.nextContinueVal ? true : false
       return (
         <div>
-          { render(items, this.props) }
+          {render(items, this.props)}
           <div className={styles["paging-controls"]}>
-            { hasPrev && <PreviousButton onClick={this.fetchPreviousPage}/> }
-            { hasMore && <NextButton onClick={this.fetchNextPage}/> }
+            {hasPrev && <PreviousButton onClick={this.fetchPreviousPage} />}
+            {hasMore && <NextButton onClick={this.fetchNextPage} />}
           </div>
         </div>
       )
     }
-
   }
-
 }

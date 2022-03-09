@@ -10,9 +10,11 @@ interface PreviousButtonProps {
 }
 
 export default class PreviousButton extends React.Component<PreviousButtonProps> {
-
   render(): React.ReactElement {
-    return <Button onClick={this.props.onClick}><FontAwesomeIcon icon={faChevronLeft}/> Previous</Button>
+    return (
+      <Button onClick={this.props.onClick}>
+        <FontAwesomeIcon icon={faChevronLeft} /> Previous
+      </Button>
+    )
   }
-
 }

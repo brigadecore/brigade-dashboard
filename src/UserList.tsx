@@ -19,14 +19,14 @@ interface UserListItemProps {
 }
 
 class UserListItem extends React.Component<UserListItemProps> {
-
   render(): React.ReactElement {
     const user = this.props.user
     const linkTo = "/users/" + this.props.user.metadata.id
     return (
       <tr>
         <td>
-          <LockIcon locked={user.locked ? true : false}/>&nbsp;&nbsp;
+          <LockIcon locked={user.locked ? true : false} />
+          &nbsp;&nbsp;
           <Link to={linkTo}>{this.props.user.metadata.id}</Link>
         </td>
         <td>{this.props.user.name}</td>
@@ -37,11 +37,14 @@ class UserListItem extends React.Component<UserListItemProps> {
 }
 
 export default withPagingControl(
-  (props: unknown, continueVal: string): Promise<meta.List<authn.User>>  => {
-    return getClient().authn().users().list({}, {
-      continue: continueVal,
-      limit: userListPageSize
-    })
+  (props: unknown, continueVal: string): Promise<meta.List<authn.User>> => {
+    return getClient().authn().users().list(
+      {},
+      {
+        continue: continueVal,
+        limit: userListPageSize
+      }
+    )
   },
   (users: authn.User[]): React.ReactElement => {
     return (
@@ -54,11 +57,9 @@ export default withPagingControl(
           </tr>
         </thead>
         <tbody>
-          {
-            users.map((user: authn.User) => (
-              <UserListItem key={user.metadata.id} user={user}/>
-            ))
-          }
+          {users.map((user: authn.User) => (
+            <UserListItem key={user.metadata.id} user={user} />
+          ))}
         </tbody>
       </Table>
     )

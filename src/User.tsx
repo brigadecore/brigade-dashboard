@@ -27,7 +27,6 @@ interface UserState {
 
 // TODO: Need to make this component auto-refresh
 class User extends React.Component<UserProps, UserState> {
-
   constructor(props: UserProps) {
     super(props)
     this.state = {}
@@ -42,31 +41,38 @@ class User extends React.Component<UserProps, UserState> {
   render(): React.ReactElement {
     const user = this.state.user
     if (!user) {
-      return <Spinner/>
+      return <Spinner />
     }
     return (
       <div>
         <h1 className="page-heading">{user?.metadata.id}</h1>
         <Tabs defaultActiveKey="summary" className="mb-3" mountOnEnter={true}>
           <Tab eventKey="summary" title="Summary">
-            <UserSummary user={user}/>
+            <UserSummary user={user} />
           </Tab>
           <Tab eventKey="system-permissions" title="System Permissions">
-            <SystemPermissionsList selector={{principal: {type: authz.PrincipalTypeUser, id: this.props.id}}}/>
+            <SystemPermissionsList
+              selector={{
+                principal: { type: authz.PrincipalTypeUser, id: this.props.id }
+              }}
+            />
           </Tab>
           <Tab eventKey="project-permissions" title="Project Permissions">
-            <ProjectPermissionsList selector={{principal: {type: authz.PrincipalTypeUser, id: this.props.id}}}/>
+            <ProjectPermissionsList
+              selector={{
+                principal: { type: authz.PrincipalTypeUser, id: this.props.id }
+              }}
+            />
           </Tab>
         </Tabs>
       </div>
     )
   }
-
 }
 
 export default function RoutedUser(): React.ReactElement {
   const params: any = useParams() // eslint-disable-line @typescript-eslint/no-explicit-any
-  return <User id={params.id}/>
+  return <User id={params.id} />
 }
 
 interface UserSummaryProps {
@@ -74,13 +80,12 @@ interface UserSummaryProps {
 }
 
 class UserSummary extends React.Component<UserSummaryProps> {
-
   render(): React.ReactElement {
     const user = this.props.user
     return (
       <Card border={user.locked ? "danger" : "success"} bg="light">
         <Card.Header>
-          <LockIcon locked={user.locked ? true : false}/>
+          <LockIcon locked={user.locked ? true : false} />
           &nbsp;&nbsp;
           {user?.metadata.id}
         </Card.Header>
@@ -93,7 +98,11 @@ class UserSummary extends React.Component<UserSummaryProps> {
               </tr>
               <tr>
                 <th>First Login</th>
-                <td>{moment(user.metadata.created).format("YYYY-MM-DD HH:mm:ss Z")}</td>
+                <td>
+                  {moment(user.metadata.created).format(
+                    "YYYY-MM-DD HH:mm:ss Z"
+                  )}
+                </td>
               </tr>
             </tbody>
           </Table>
@@ -101,5 +110,4 @@ class UserSummary extends React.Component<UserSummaryProps> {
       </Card>
     )
   }
-
 }

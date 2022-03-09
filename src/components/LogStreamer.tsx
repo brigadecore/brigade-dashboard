@@ -14,7 +14,6 @@ interface LogStreamerProps {
 }
 
 export default class LogStreamer extends React.Component<LogStreamerProps> {
-
   logStream?: core.LogEntryStream
   logBoxID: string
 
@@ -28,15 +27,16 @@ export default class LogStreamer extends React.Component<LogStreamerProps> {
     const event = this.props.event
     if (event.metadata?.id) {
       this.logStream = logsClient.stream(
-        event.metadata?.id, {
+        event.metadata?.id,
+        {
           job: this.props.jobName,
           container: this.props.containerName
         },
-        {follow: true}
+        { follow: true }
       )
       const logBox = document.getElementById(this.logBoxID)
       if (logBox) {
-        this.logStream.onData((logEntry: core.LogEntry) => {  
+        this.logStream.onData((logEntry: core.LogEntry) => {
           logBox.innerHTML += logEntry.message + "<br/>"
         })
       }
@@ -50,9 +50,6 @@ export default class LogStreamer extends React.Component<LogStreamerProps> {
   }
 
   render(): React.ReactElement {
-    return (
-      <pre id={this.logBoxID} className={styles["log-box"]}/>
-    )
+    return <pre id={this.logBoxID} className={styles["log-box"]} />
   }
-
 }

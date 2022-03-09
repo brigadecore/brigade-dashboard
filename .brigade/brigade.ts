@@ -1,4 +1,4 @@
-import { events, Event, Job, SerialGroup, Container } from "@brigadecore/brigadier"
+import { Container, events, Event, Job } from "@brigadecore/brigadier"
 
 const dindImg = "docker:20.10.9-dind"
 const dockerClientImg = "brigadecore/docker-tools:v0.1.0"
@@ -8,13 +8,18 @@ const nodeImg = "node:16.13.2-alpine3.15"
 
 // MakeTargetJob is just a job wrapper around one or more make targets.
 class MakeTargetJob extends Job {
-  constructor(targets: string[], img: string, event: Event, env?: {[key: string]: string}) {
+  constructor(
+    targets: string[],
+    img: string,
+    event: Event,
+    env?: { [key: string]: string }
+  ) {
     super(targets[0], img, event)
     this.primaryContainer.sourceMountPath = localPath
     this.primaryContainer.workingDirectory = localPath
     this.primaryContainer.environment = env || {}
     this.primaryContainer.environment["SKIP_DOCKER"] = "true"
-    this.primaryContainer.command = [ "make" ]
+    this.primaryContainer.command = ["make"]
     this.primaryContainer.arguments = targets
   }
 }
@@ -40,7 +45,7 @@ class MakeTargetJob extends Job {
 //
 // Tempting as it is to create a new builder using the Kubernetes driver (i.e.
 // `docker buildx create --driver kubernetes`), this comes with two problems:
-// 
+//
 // 1. It would require giving our jobs a lot of additional permissions that they
 //    don't otherwise need (creating deployments, for instance). This represents
 //    an attack vector I'd rather not open.
@@ -59,14 +64,14 @@ class MakeTargetJob extends Job {
 // If and when the capability exists to use `docker buildx` with existing
 // builders, we can streamline all of this pretty significantly.
 class BuildImageJob extends MakeTargetJob {
-  constructor(target: string, event: Event, env?: {[key: string]: string}) {
+  constructor(target: string, event: Event, env?: { [key: string]: string }) {
     env ||= {}
     env["DOCKER_ORG"] = event.project.secrets.dockerhubOrg
     env["DOCKER_USERNAME"] = event.project.secrets.dockerhubUsername
     env["DOCKER_PASSWORD"] = event.project.secrets.dockerhubPassword
     super([target], dockerClientImg, event, env)
     this.primaryContainer.environment.DOCKER_HOST = "localhost:2375"
-    this.primaryContainer.command = [ "sh" ]
+    this.primaryContainer.command = ["sh"]
     this.primaryContainer.arguments = [
       "-c",
       // The sleep is a grace period after which we assume the DinD sidecar is
@@ -76,7 +81,7 @@ class BuildImageJob extends MakeTargetJob {
 
     this.sidecarContainers.docker = new Container(dindImg)
     this.sidecarContainers.docker.privileged = true
-    this.sidecarContainers.docker.environment.DOCKER_TLS_CERTDIR=""
+    this.sidecarContainers.docker.environment.DOCKER_TLS_CERTDIR = ""
   }
 }
 
@@ -93,9 +98,20 @@ class PushImageJob extends BuildImageJob {
 
 // A map of all jobs. When a ci:job_requested event wants to re-run a single
 // job, this allows us to easily find that job by name.
-const jobs: {[key: string]: (event: Event) => Job } = {}
+const jobs: { [key: string]: (event: Event) => Job } = {}
 
 // Basic tests:
+
+const styleCheckJobName = "style-check"
+const styleCheckJob = (event: Event) => {
+  const job = new Job(styleCheckJobName, nodeImg, event)
+  job.primaryContainer.sourceMountPath = localPath
+  job.primaryContainer.workingDirectory = localPath
+  job.primaryContainer.command = ["sh"]
+  job.primaryContainer.arguments = ["-c", "yarn install && yarn style:check"]
+  return job
+}
+jobs[styleCheckJobName] = styleCheckJob
 
 const lintJobName = "lint"
 const lintJob = (event: Event) => {
@@ -125,23 +141,23 @@ jobs[pushJobName] = pushJob
 const publishChartJobName = "publish-chart"
 const publishChartJob = (event: Event, version: string) => {
   return new MakeTargetJob([publishChartJobName], helmImg, event, {
-    "VERSION": version,
-    "HELM_REGISTRY": event.project.secrets.helmRegistry || "ghcr.io",
-    "HELM_ORG": event.project.secrets.helmOrg,
-    "HELM_USERNAME": event.project.secrets.helmUsername,
-    "HELM_PASSWORD": event.project.secrets.helmPassword
+    VERSION: version,
+    HELM_REGISTRY: event.project.secrets.helmRegistry || "ghcr.io",
+    HELM_ORG: event.project.secrets.helmOrg,
+    HELM_USERNAME: event.project.secrets.helmUsername,
+    HELM_PASSWORD: event.project.secrets.helmPassword
   })
 }
 
-events.on("brigade.sh/github", "ci:pipeline_requested", async event => {
-  await new SerialGroup(
-    lintJob(event),
+events.on("brigade.sh/github", "ci:pipeline_requested", async (event) => {
+  await Job.sequence(
+    Job.concurrent(styleCheckJob(event), lintJob(event)),
     buildJob(event)
   ).run()
 })
 
 // This event indicates a specific job is to be re-run.
-events.on("brigade.sh/github", "ci:job_requested", async event => {
+events.on("brigade.sh/github", "ci:job_requested", async (event) => {
   const job = jobs[event.labels.job]
   if (job) {
     await job(event).run()
@@ -150,9 +166,9 @@ events.on("brigade.sh/github", "ci:job_requested", async event => {
   throw new Error(`No job found with name: ${event.labels.job}`)
 })
 
-events.on("brigade.sh/github", "cd:pipeline_requested", async event => {
+events.on("brigade.sh/github", "cd:pipeline_requested", async (event) => {
   const version = JSON.parse(event.payload).release.tag_name
-  await new SerialGroup(
+  await Job.sequence(
     pushJob(event, version),
     // Chart publishing is deliberately run only after all image pushes above
     // have succeeded. We don't want any possibility of publishing a chart

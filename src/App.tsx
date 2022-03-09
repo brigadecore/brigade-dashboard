@@ -21,7 +21,6 @@ interface AppState {
 }
 
 export default class App extends React.Component<unknown, AppState> {
-
   constructor(props: unknown) {
     super(props)
     this.state = {
@@ -31,11 +30,9 @@ export default class App extends React.Component<unknown, AppState> {
 
   handleLogin = async () => {
     const sessionsClient = getClient().authn().sessions()
-    const thirdPartyAuthDetails = await sessionsClient.createUserSession(
-      {
-        successURL: window.location.href
-      }
-    )
+    const thirdPartyAuthDetails = await sessionsClient.createUserSession({
+      successURL: window.location.href
+    })
     localStorage.setItem(consts.brigadeAPITokenKey, thirdPartyAuthDetails.token)
     window.location.href = thirdPartyAuthDetails.authURL
   }
@@ -56,7 +53,7 @@ export default class App extends React.Component<unknown, AppState> {
             <Container>
               <LinkContainer to="/">
                 <Navbar.Brand>
-                  <img src={logoDark} height="40"/>
+                  <img src={logoDark} height="40" />
                 </Navbar.Brand>
               </LinkContainer>
               <Navbar.Toggle aria-controls="basic-navbar-nav" />
@@ -78,34 +75,37 @@ export default class App extends React.Component<unknown, AppState> {
                     <Nav.Link>System Permissions</Nav.Link>
                   </LinkContainer>
                 </Nav>
-                <LoginControl loggedIn={loggedIn} onLogin={this.handleLogin} onLogout={this.handleLogout}/>
+                <LoginControl
+                  loggedIn={loggedIn}
+                  onLogin={this.handleLogin}
+                  onLogout={this.handleLogout}
+                />
               </Navbar.Collapse>
             </Container>
           </Navbar>
         </header>
         <main>
           <Container>
-            {
-              loggedIn ? (
-                <Outlet/>
-              ) : (
-                <div>
-                  <Alert variant="primary">Log in to see this content.</Alert>
-                  <Home/>
-                </div>
-              )
-            }
+            {loggedIn ? (
+              <Outlet />
+            ) : (
+              <div>
+                <Alert variant="primary">Log in to see this content.</Alert>
+                <Home />
+              </div>
+            )}
           </Container>
         </main>
         <footer>
           <Navbar bg="dark" variant="dark" expand="lg" fixed="bottom">
             <Container>
-              <span className="text-muted">&copy; 2022 The Brigade Authors</span>
+              <span className="text-muted">
+                &copy; 2022 The Brigade Authors
+              </span>
             </Container>
           </Navbar>
         </footer>
       </Fragment>
     )
   }
-
 }
