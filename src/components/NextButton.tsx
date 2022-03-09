@@ -6,7 +6,7 @@ import React from "react"
 import Button from "react-bootstrap/Button"
 
 interface NextButtonProps {
-  onClick: () => {}
+  onClick: () => void
 }
 
 export default class NextButton extends React.Component<NextButtonProps> {

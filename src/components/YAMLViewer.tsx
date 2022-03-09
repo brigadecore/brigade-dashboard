@@ -6,7 +6,7 @@ import { Light as SyntaxHighlighter } from "react-syntax-highlighter"
 import yamlSyntax from "react-syntax-highlighter/dist/esm/languages/hljs/yaml"
 import style from "react-syntax-highlighter/dist/esm/styles/hljs/sunburst"
 
-SyntaxHighlighter.registerLanguage('yaml', yamlSyntax)
+SyntaxHighlighter.registerLanguage("yaml", yamlSyntax)
 
 interface YAMLViewerProps<T> {
   object: T

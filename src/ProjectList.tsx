@@ -54,10 +54,8 @@ class ProjectListItem extends React.Component<ProjectListItemProps, ProjectListI
 
 }
 
-interface ProjectListProps {}
-
 export default withPagingControl(
-  (props: ProjectListProps, continueVal: string): Promise<meta.List<core.Project>>  => {
+  (props: unknown, continueVal: string): Promise<meta.List<core.Project>>  => {
     return getClient().core().projects().list({}, {
       continue: continueVal,
       limit: projectListPageSize

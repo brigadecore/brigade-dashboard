@@ -65,7 +65,7 @@ class User extends React.Component<UserProps, UserState> {
 }
 
 export default function RoutedUser(): React.ReactElement {
-  const params: any = useParams()
+  const params: any = useParams() // eslint-disable-line @typescript-eslint/no-explicit-any
   return <User id={params.id}/>
 }
 

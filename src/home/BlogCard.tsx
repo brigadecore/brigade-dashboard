@@ -2,7 +2,7 @@ import moment from "moment"
 
 import React from "react"
 
-import rssEnhancer, { InjectionRSSProps } from 'react-rss';
+import rssEnhancer, { InjectionRSSProps } from "react-rss"
 
 import Card from "react-bootstrap/Card"
 

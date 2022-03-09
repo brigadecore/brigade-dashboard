@@ -36,12 +36,12 @@ class SystemPermissionsListItem extends React.Component<SystemPermissionsListIte
     if (!this.props.suppressPrincipalColumn) {
       let locked: boolean | null = null
       switch (this.props.roleAssignment.principal.type) {
-        case authz.PrincipalTypeServiceAccount:
-          locked = (await getClient().authn().serviceAccounts().get(this.props.roleAssignment.principal.id)).locked? true : false
-          break
-        case authz.PrincipalTypeUser:
-          locked = (await getClient().authn().users().get(this.props.roleAssignment.principal.id)).locked? true : false
-          break
+      case authz.PrincipalTypeServiceAccount:
+        locked = (await getClient().authn().serviceAccounts().get(this.props.roleAssignment.principal.id)).locked? true : false
+        break
+      case authz.PrincipalTypeUser:
+        locked = (await getClient().authn().users().get(this.props.roleAssignment.principal.id)).locked? true : false
+        break
       }
       this.setState({
         locked: locked
@@ -56,10 +56,10 @@ class SystemPermissionsListItem extends React.Component<SystemPermissionsListIte
     return (
       <tr>
         { this.props.suppressPrincipalColumn ? null : (
-            <td>
-              <PrincipalIcon principalType={this.props.roleAssignment.principal.type} locked={this.state.locked}/>&nbsp;&nbsp;
-              <Link to={linkTo}>{this.props.roleAssignment.principal.id}</Link>
-            </td>
+          <td>
+            <PrincipalIcon principalType={this.props.roleAssignment.principal.type} locked={this.state.locked}/>&nbsp;&nbsp;
+            <Link to={linkTo}>{this.props.roleAssignment.principal.id}</Link>
+          </td>
         )}
         <td>{this.props.roleAssignment.role}</td>
         <td>{this.props.roleAssignment.scope}</td>

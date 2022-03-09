@@ -46,10 +46,8 @@ class ServiceAccountListItem extends React.Component<ServiceAccountListItemProps
   }
 }
 
-interface ServiceAccountListProps {}
-
 export default withPagingControl(
-  (props: ServiceAccountListProps, continueVal: string): Promise<meta.List<authn.ServiceAccount>>  => {
+  (props: unknown, continueVal: string): Promise<meta.List<authn.ServiceAccount>>  => {
     return getClient().authn().serviceAccounts().list({}, {
       continue: continueVal,
       limit: serviceAccountListPageSize

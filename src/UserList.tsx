@@ -36,10 +36,8 @@ class UserListItem extends React.Component<UserListItemProps> {
   }
 }
 
-interface UserListProps {}
-
 export default withPagingControl(
-  (props: UserListProps, continueVal: string): Promise<meta.List<authn.User>>  => {
+  (props: unknown, continueVal: string): Promise<meta.List<authn.User>>  => {
     return getClient().authn().users().list({}, {
       continue: continueVal,
       limit: userListPageSize

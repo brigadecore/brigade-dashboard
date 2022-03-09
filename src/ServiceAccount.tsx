@@ -65,7 +65,7 @@ class ServiceAccount extends React.Component<ServiceAccountProps, ServiceAccount
 }
 
 export default function RoutedServiceAccount(): React.ReactElement {
-  const params: any = useParams()
+  const params: any = useParams() // eslint-disable-line @typescript-eslint/no-explicit-any
   return <ServiceAccount id={params.id}/>
 }
 
