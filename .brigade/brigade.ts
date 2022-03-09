@@ -1,4 +1,4 @@
-import { events, Event, Job, SerialGroup, Container } from "@brigadecore/brigadier"
+import { Container, events, Event, Job } from "@brigadecore/brigadier"
 
 const dindImg = "docker:20.10.9-dind"
 const dockerClientImg = "brigadecore/docker-tools:v0.1.0"
@@ -97,6 +97,17 @@ const jobs: {[key: string]: (event: Event) => Job } = {}
 
 // Basic tests:
 
+const styleCheckJobName = "style-check"
+const styleCheckJob = (event: Event) => {
+  const job = new Job(styleCheckJobName, nodeImg, event)
+  job.primaryContainer.sourceMountPath = localPath
+  job.primaryContainer.workingDirectory = localPath
+  job.primaryContainer.command = ["sh"]
+  job.primaryContainer.arguments = ["-c", "yarn install && yarn style:check"]
+  return job
+}
+jobs[styleCheckJobName] = styleCheckJob
+
 const lintJobName = "lint"
 const lintJob = (event: Event) => {
   const job = new Job(lintJobName, nodeImg, event)
@@ -134,8 +145,11 @@ const publishChartJob = (event: Event, version: string) => {
 }
 
 events.on("brigade.sh/github", "ci:pipeline_requested", async event => {
-  await new SerialGroup(
-    lintJob(event),
+  await Job.sequence(
+    Job.concurrent(
+      styleCheckJob(event),
+      lintJob(event),
+    ),    
     buildJob(event)
   ).run()
 })
@@ -152,7 +166,7 @@ events.on("brigade.sh/github", "ci:job_requested", async event => {
 
 events.on("brigade.sh/github", "cd:pipeline_requested", async event => {
   const version = JSON.parse(event.payload).release.tag_name
-  await new SerialGroup(
+  await Job.sequence(
     pushJob(event, version),
     // Chart publishing is deliberately run only after all image pushes above
     // have succeeded. We don't want any possibility of publishing a chart

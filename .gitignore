@@ -24,3 +24,5 @@ yarn-error.log*
 
 .brigade/secrets.yaml
 .brigade/node_modules/
+
+.vscode/
