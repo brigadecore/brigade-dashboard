@@ -8,10 +8,16 @@ export default async function getUser(): Promise<string> {
 		return userIdFromLocalStorage;
 	}
 	else {
-		const fetchedUserId = (await getClient().authn().whoAmI()).id;
-		localStorage.setItem(consts.brigadeUserIdKey, fetchedUserId);
-		
-		return fetchedUserId;
+
+		try {
+			const fetchedUserId = (await getClient().authn().whoAmI()).id;
+			localStorage.setItem(consts.brigadeUserIdKey, fetchedUserId);
+	
+			return fetchedUserId;
+		}
+		catch(err) {
+			return ""
+		}
 	}
 
 }
