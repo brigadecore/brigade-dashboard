@@ -27,7 +27,6 @@ export default class App extends React.Component<unknown, AppState> {
     this.state = {
       loggedIn: ""
     }
-    this.identifyUser()
   }
 
   identifyUser = async () => {
@@ -47,6 +46,10 @@ export default class App extends React.Component<unknown, AppState> {
   handleLogout = () => {
     this.setState({ loggedIn: "" })
     localStorage.removeItem(consts.brigadeAPITokenKey)
+  }
+
+  componentDidMount() {
+    this.identifyUser()
   }
 
   render(): React.ReactElement {
