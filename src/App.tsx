@@ -25,17 +25,14 @@ export default class App extends React.Component<unknown, AppState> {
   constructor(props: unknown) {
     super(props)
     this.state = {
-      loggedIn: ''
+      loggedIn: ""
     }
     this.identifyUser()
   }
 
   identifyUser = async () => {
-    try {
-      const userId = (await getClient().authn().whoAmI()).id
-      this.setState({ loggedIn: userId})
-    }
-    catch(err) {}
+    const userId = (await getClient().authn().whoAmI()).id
+    this.setState({ loggedIn: userId})
   }
 
   handleLogin = async () => {
@@ -48,7 +45,7 @@ export default class App extends React.Component<unknown, AppState> {
   }
 
   handleLogout = () => {
-    this.setState({ loggedIn: '' })
+    this.setState({ loggedIn: "" })
     localStorage.removeItem(consts.brigadeAPITokenKey)
   }
 
