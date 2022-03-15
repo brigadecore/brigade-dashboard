@@ -10,6 +10,7 @@ import { Outlet } from "react-router-dom"
 
 import getClient from "./Client"
 import * as consts from "./Consts"
+import getUser from "./User"
 import Home from "./Home"
 import LoginControl from "./LoginControl"
 
@@ -31,9 +32,8 @@ export default class App extends React.Component<unknown, AppState> {
 
   identifyUser = async () => {
     try {
-      const userId = (await getClient().authn().whoAmI()).id
+      const userId = await getUser()
       this.setState({ loggedIn: userId})
-      localStorage.setItem(consts.brigadeUserIdKey, userId)
     }
     catch(err) {
       console.error("Error identifying user: ", err)
