@@ -15,17 +15,27 @@ import LoginControl from "./LoginControl"
 
 import "./App.scss"
 import logoDark from "./images/logo-dark.png"
+import { connect } from "tls"
 
 interface AppState {
-  loggedIn: boolean
+  loggedIn: string
 }
 
 export default class App extends React.Component<unknown, AppState> {
   constructor(props: unknown) {
     super(props)
     this.state = {
-      loggedIn: localStorage.getItem(consts.brigadeAPITokenKey) ? true : false
+      loggedIn: ''
     }
+    this.identifyUser()
+  }
+
+  identifyUser = async () => {
+    try {
+      const userId = (await getClient().authn().whoAmI()).id
+      this.setState({ loggedIn: userId})
+    }
+    catch(err) {}
   }
 
   handleLogin = async () => {
@@ -38,9 +48,7 @@ export default class App extends React.Component<unknown, AppState> {
   }
 
   handleLogout = () => {
-    this.setState({
-      loggedIn: false
-    })
+    this.setState({ loggedIn: '' })
     localStorage.removeItem(consts.brigadeAPITokenKey)
   }
 
