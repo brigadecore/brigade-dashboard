@@ -3,7 +3,7 @@ import React from "react"
 import Button from "react-bootstrap/Button"
 
 interface LoginControlProps {
-  loggedIn: string
+  loggedIn: boolean
   onLogin: () => void
   onLogout: () => void
 }

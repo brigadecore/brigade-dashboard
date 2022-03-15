@@ -30,8 +30,14 @@ export default class App extends React.Component<unknown, AppState> {
   }
 
   identifyUser = async () => {
-    const userId = (await getClient().authn().whoAmI()).id
-    this.setState({ loggedIn: userId})
+    try {
+      const userId = (await getClient().authn().whoAmI()).id
+      this.setState({ loggedIn: userId})
+      localStorage.setItem(consts.brigadeUserIdKey, userId)
+    }
+    catch(err) {
+      console.error("Error identifying user: ", err)
+    }
   }
 
   handleLogin = async () => {
@@ -84,7 +90,7 @@ export default class App extends React.Component<unknown, AppState> {
                   </LinkContainer>
                 </Nav>
                 <LoginControl
-                  loggedIn={loggedIn}
+                  loggedIn={loggedIn !== ""}
                   onLogin={this.handleLogin}
                   onLogout={this.handleLogout}
                 />
