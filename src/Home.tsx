@@ -4,6 +4,7 @@ import Col from "react-bootstrap/Col"
 import Container from "react-bootstrap/Container"
 import Image from "react-bootstrap/Image"
 import Row from "react-bootstrap/Row"
+import Alert from "react-bootstrap/Alert"
 
 import BlogCard from "./home/BlogCard"
 import ContributeCard from "./home/ContributeCard"
@@ -14,8 +15,10 @@ import styles from "./Home.module.scss"
 
 export default class Home extends React.Component {
   render(): React.ReactElement {
+    const showAlert = window.location.pathname !== "/"
     return (
       <Container>
+        { showAlert && <Alert variant="primary">Log in to see this content.</Alert> }
         <Row>
           <Col className={styles.splash}>
             <Image src={logo} fluid />

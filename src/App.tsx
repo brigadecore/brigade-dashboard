@@ -1,6 +1,5 @@
 import React, { Fragment } from "react"
 
-import Alert from "react-bootstrap/Alert"
 import Container from "react-bootstrap/Container"
 import Nav from "react-bootstrap/Nav"
 import Navbar from "react-bootstrap/Navbar"
@@ -89,10 +88,7 @@ export default class App extends React.Component<unknown, AppState> {
             {loggedIn ? (
               <Outlet />
             ) : (
-              <div>
-                <Alert variant="primary">Log in to see this content.</Alert>
                 <Home />
-              </div>
             )}
           </Container>
         </main>
