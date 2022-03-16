@@ -33,9 +33,8 @@ export default class App extends React.Component<unknown, AppState> {
   identifyUser = async () => {
     try {
       const userId = await getUser()
-      this.setState({ loggedIn: userId})
-    }
-    catch(err) {
+      this.setState({ loggedIn: userId })
+    } catch (err) {
       console.error("Error identifying user: ", err)
     }
   }
