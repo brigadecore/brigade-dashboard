@@ -8,41 +8,18 @@ interface LoginControlProps {
   onLogout: () => void
 }
 
-interface LoginControlState {
-  loggedIn: boolean
-}
-
-export default class LoginControl extends React.Component<
-  LoginControlProps,
-  LoginControlState
-> {
-  constructor(props: LoginControlProps) {
-    super(props)
-    this.state = { loggedIn: props.loggedIn }
-  }
-
-  handleLogin = () => {
-    this.setState({ loggedIn: true })
-    this.props.onLogin()
-  }
-
-  handleLogout = () => {
-    this.setState({ loggedIn: false })
-    this.props.onLogout()
-  }
-
+export default class LoginControl extends React.Component<LoginControlProps> {
   render(): React.ReactElement {
-    const loggedIn = this.state.loggedIn
     let button
-    if (!loggedIn) {
+    if (!this.props.loggedIn) {
       button = (
-        <Button variant="outline-light" onClick={this.handleLogin}>
+        <Button variant="outline-light" onClick={this.props.onLogin}>
           Login
         </Button>
       )
     } else {
       button = (
-        <Button variant="outline-light" onClick={this.handleLogout}>
+        <Button variant="outline-light" onClick={this.props.onLogout}>
           Logout
         </Button>
       )
