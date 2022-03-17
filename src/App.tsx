@@ -10,30 +10,29 @@ import { Outlet } from "react-router-dom"
 
 import getClient from "./Client"
 import * as consts from "./Consts"
-import getUser from "./User"
+import getUser from "./UserLogin"
 import Home from "./Home"
 import LoginControl from "./LoginControl"
 
 import "./App.scss"
 import logoDark from "./images/logo-dark.png"
-import { connect } from "tls"
 
 interface AppState {
-  loggedIn: string
+  loggedIn: boolean
 }
 
 export default class App extends React.Component<unknown, AppState> {
   constructor(props: unknown) {
     super(props)
     this.state = {
-      loggedIn: ""
+      loggedIn: false
     }
   }
 
   identifyUser = async () => {
     try {
       const userId = await getUser()
-      this.setState({ loggedIn: userId })
+      this.setState({ loggedIn: userId !== "" })
     } catch (err) {
       console.error("Error identifying user: ", err)
     }
@@ -49,7 +48,8 @@ export default class App extends React.Component<unknown, AppState> {
   }
 
   handleLogout = () => {
-    this.setState({ loggedIn: "" })
+    this.setState({ loggedIn: false })
+    localStorage.removeItem(consts.brigadeUserIdKey)
     localStorage.removeItem(consts.brigadeAPITokenKey)
   }
 
@@ -89,7 +89,7 @@ export default class App extends React.Component<unknown, AppState> {
                   </LinkContainer>
                 </Nav>
                 <LoginControl
-                  loggedIn={loggedIn !== ""}
+                  loggedIn={loggedIn}
                   onLogin={this.handleLogin}
                   onLogout={this.handleLogout}
                 />
