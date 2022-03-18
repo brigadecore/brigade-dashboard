@@ -2,9 +2,7 @@ import * as consts from "./Consts"
 import getClient from "./Client"
 
 export async function getUser(): Promise<string> {
-  const userIdFromLocalStorage: string | null = localStorage.getItem(
-    consts.brigadeUserIdKey
-  )
+  const userIdFromLocalStorage = localStorage.getItem(consts.brigadeUserIdKey)
 
   if (userIdFromLocalStorage) {
     return userIdFromLocalStorage
@@ -16,6 +14,7 @@ export async function getUser(): Promise<string> {
 
     return fetchedUserId
   } catch {
+    // TODO: Improvement needed. Something better than empty string.
     return ""
   }
 }
