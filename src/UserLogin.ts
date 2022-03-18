@@ -1,7 +1,7 @@
 import * as consts from "./Consts"
 import getClient from "./Client"
 
-export default async function getUser(): Promise<string> {
+export async function getUser(): Promise<string> {
   const userIdFromLocalStorage: string | null = localStorage.getItem(
     consts.brigadeUserIdKey
   )
@@ -18,4 +18,8 @@ export default async function getUser(): Promise<string> {
   } catch {
     return ""
   }
+}
+
+export function removeUser(): void {
+  localStorage.removeItem(consts.brigadeUserIdKey)
 }

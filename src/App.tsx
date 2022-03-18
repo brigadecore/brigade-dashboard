@@ -10,7 +10,7 @@ import { Outlet } from "react-router-dom"
 
 import getClient from "./Client"
 import * as consts from "./Consts"
-import getUser from "./UserLogin"
+import {getUser, removeUser} from "./UserLogin"
 import Home from "./Home"
 import LoginControl from "./LoginControl"
 
@@ -25,16 +25,7 @@ export default class App extends React.Component<unknown, AppState> {
   constructor(props: unknown) {
     super(props)
     this.state = {
-      loggedIn: false
-    }
-  }
-
-  identifyUser = async () => {
-    try {
-      const userId = await getUser()
-      this.setState({ loggedIn: userId !== "" })
-    } catch (err) {
-      console.error("Error identifying user: ", err)
+      loggedIn: localStorage.getItem(consts.brigadeAPITokenKey) ? true : false
     }
   }
 
@@ -43,18 +34,15 @@ export default class App extends React.Component<unknown, AppState> {
     const thirdPartyAuthDetails = await sessionsClient.createUserSession({
       successURL: window.location.href
     })
+    await getUser()
     localStorage.setItem(consts.brigadeAPITokenKey, thirdPartyAuthDetails.token)
     window.location.href = thirdPartyAuthDetails.authURL
   }
 
   handleLogout = () => {
     this.setState({ loggedIn: false })
-    localStorage.removeItem(consts.brigadeUserIdKey)
+    removeUser()
     localStorage.removeItem(consts.brigadeAPITokenKey)
-  }
-
-  componentDidMount() {
-    this.identifyUser()
   }
 
   render(): React.ReactElement {
