@@ -34,7 +34,6 @@ export default class App extends React.Component<unknown, AppState> {
     const thirdPartyAuthDetails = await sessionsClient.createUserSession({
       successURL: window.location.href
     })
-    await getUser()
     localStorage.setItem(consts.brigadeAPITokenKey, thirdPartyAuthDetails.token)
     window.location.href = thirdPartyAuthDetails.authURL
   }
