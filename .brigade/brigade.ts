@@ -6,19 +6,33 @@ const helmImg = "brigadecore/helm-tools:v0.4.0"
 const localPath = "/workspaces/brigade-github-gateway"
 const nodeImg = "node:16.13.2-alpine3.15"
 
-// MakeTargetJob is just a job wrapper around one or more make targets.
-class MakeTargetJob extends Job {
+// JobWithSource is a base class for any Job that uses project source code.
+class JobWithSource extends Job {
   constructor(
+    name: string,
+    img: string,
+    event: Event,
+    env?: { [key: string]: string }
+  ) {
+    super(name, img, event)
+    this.primaryContainer.sourceMountPath = localPath
+    this.primaryContainer.workingDirectory = localPath
+    this.primaryContainer.environment = env || {}
+  }
+}
+
+// MakeTargetJob is just a job wrapper around one or more make targets.
+class MakeTargetJob extends JobWithSource {
+  constructor(
+    name: string,
     targets: string[],
     img: string,
     event: Event,
     env?: { [key: string]: string }
   ) {
-    super(targets[0], img, event)
-    this.primaryContainer.sourceMountPath = localPath
-    this.primaryContainer.workingDirectory = localPath
-    this.primaryContainer.environment = env || {}
-    this.primaryContainer.environment["SKIP_DOCKER"] = "true"
+    env ||= {}
+    env["SKIP_DOCKER"] = "true"
+    super(name, img, event, env)
     this.primaryContainer.command = ["make"]
     this.primaryContainer.arguments = targets
   }
@@ -150,7 +164,7 @@ const buildJob = (event: Event, version?: string) => {
     env["IMAGE_REGISTRY_PASSWORD"] = registryPassword
     registriesLoginCmd = `${registriesLoginCmd} && docker login ${registry} -u ${registryUsername} -p $IMAGE_REGISTRY_PASSWORD`
   }
-  const job = new MakeTargetJob(["build"], dockerClientImg, event, env)
+  const job = new JobWithSource("build", dockerClientImg, event, env)
   job.primaryContainer.command = ["sh"]
   job.primaryContainer.arguments = [
     "-c",
@@ -171,13 +185,19 @@ jobs[buildJobName] = buildJob
 
 const publishChartJobName = "publish-chart"
 const publishChartJob = (event: Event, version: string) => {
-  return new MakeTargetJob([publishChartJobName], helmImg, event, {
-    VERSION: version,
-    HELM_REGISTRY: event.project.secrets.helmRegistry || "ghcr.io",
-    HELM_ORG: event.project.secrets.helmOrg,
-    HELM_USERNAME: event.project.secrets.helmUsername,
-    HELM_PASSWORD: event.project.secrets.helmPassword
-  })
+  return new MakeTargetJob(
+    publishChartJobName,
+    ["publish-chart"],
+    helmImg,
+    event,
+    {
+      VERSION: version,
+      HELM_REGISTRY: event.project.secrets.helmRegistry || "ghcr.io",
+      HELM_ORG: event.project.secrets.helmOrg,
+      HELM_USERNAME: event.project.secrets.helmUsername,
+      HELM_PASSWORD: event.project.secrets.helmPassword
+    }
+  )
 }
 
 events.on("brigade.sh/github", "ci:pipeline_requested", async (event) => {
