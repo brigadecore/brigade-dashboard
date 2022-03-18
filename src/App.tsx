@@ -10,7 +10,6 @@ import { Outlet } from "react-router-dom"
 
 import getClient from "./Client"
 import * as consts from "./Consts"
-import {getUser, removeUser} from "./UserLogin"
 import Home from "./Home"
 import LoginControl from "./LoginControl"
 
@@ -40,7 +39,7 @@ export default class App extends React.Component<unknown, AppState> {
 
   handleLogout = () => {
     this.setState({ loggedIn: false })
-    removeUser()
+    localStorage.removeItem(consts.brigadeUserIdKey)
     localStorage.removeItem(consts.brigadeAPITokenKey)
   }
 

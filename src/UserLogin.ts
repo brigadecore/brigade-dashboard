@@ -19,7 +19,3 @@ export async function getUser(): Promise<string> {
     return ""
   }
 }
-
-export function removeUser(): void {
-  localStorage.removeItem(consts.brigadeUserIdKey)
-}
