@@ -1,24 +1,38 @@
 import { Container, events, Event, Job } from "@brigadecore/brigadier"
 
 const dindImg = "docker:20.10.9-dind"
-const dockerClientImg = "brigadecore/docker-tools:v0.1.0"
+const dockerClientImg = "brigadecore/docker-tools:v0.2.0"
 const helmImg = "brigadecore/helm-tools:v0.4.0"
 const localPath = "/workspaces/brigade-github-gateway"
 const nodeImg = "node:16.13.2-alpine3.15"
 
-// MakeTargetJob is just a job wrapper around one or more make targets.
-class MakeTargetJob extends Job {
+// JobWithSource is a base class for any Job that uses project source code.
+class JobWithSource extends Job {
   constructor(
+    name: string,
+    img: string,
+    event: Event,
+    env?: { [key: string]: string }
+  ) {
+    super(name, img, event)
+    this.primaryContainer.sourceMountPath = localPath
+    this.primaryContainer.workingDirectory = localPath
+    this.primaryContainer.environment = env || {}
+  }
+}
+
+// MakeTargetJob is just a job wrapper around one or more make targets.
+class MakeTargetJob extends JobWithSource {
+  constructor(
+    name: string,
     targets: string[],
     img: string,
     event: Event,
     env?: { [key: string]: string }
   ) {
-    super(targets[0], img, event)
-    this.primaryContainer.sourceMountPath = localPath
-    this.primaryContainer.workingDirectory = localPath
-    this.primaryContainer.environment = env || {}
-    this.primaryContainer.environment["SKIP_DOCKER"] = "true"
+    env ||= {}
+    env["SKIP_DOCKER"] = "true"
+    super(name, img, event, env)
     this.primaryContainer.command = ["make"]
     this.primaryContainer.arguments = targets
   }
@@ -150,7 +164,7 @@ const buildJob = (event: Event, version?: string) => {
     env["IMAGE_REGISTRY_PASSWORD"] = registryPassword
     registriesLoginCmd = `${registriesLoginCmd} && docker login ${registry} -u ${registryUsername} -p $IMAGE_REGISTRY_PASSWORD`
   }
-  const job = new MakeTargetJob(["build"], dockerClientImg, event, env)
+  const job = new JobWithSource("build", dockerClientImg, event, env)
   job.primaryContainer.command = ["sh"]
   job.primaryContainer.arguments = [
     "-c",
@@ -169,21 +183,50 @@ const buildJob = (event: Event, version?: string) => {
 }
 jobs[buildJobName] = buildJob
 
+const scanJobName = "scan"
+const scanJob = (event: Event) => {
+  const env = {}
+  const secrets = event.project.secrets
+  if (secrets.unstableImageRegistry) {
+    env["DOCKER_REGISTRY"] = secrets.unstableImageRegistry
+  }
+  if (secrets.unstableImageRegistryOrg) {
+    env["DOCKER_ORG"] = secrets.unstableImageRegistryOrg
+  }
+  const job = new MakeTargetJob(
+    scanJobName,
+    ["scan"],
+    dockerClientImg,
+    event,
+    env
+  )
+  job.fallible = true
+  return job
+}
+jobs[scanJobName] = scanJob
+
 const publishChartJobName = "publish-chart"
 const publishChartJob = (event: Event, version: string) => {
-  return new MakeTargetJob([publishChartJobName], helmImg, event, {
-    VERSION: version,
-    HELM_REGISTRY: event.project.secrets.helmRegistry || "ghcr.io",
-    HELM_ORG: event.project.secrets.helmOrg,
-    HELM_USERNAME: event.project.secrets.helmUsername,
-    HELM_PASSWORD: event.project.secrets.helmPassword
-  })
+  return new MakeTargetJob(
+    publishChartJobName,
+    ["publish-chart"],
+    helmImg,
+    event,
+    {
+      VERSION: version,
+      HELM_REGISTRY: event.project.secrets.helmRegistry || "ghcr.io",
+      HELM_ORG: event.project.secrets.helmOrg,
+      HELM_USERNAME: event.project.secrets.helmUsername,
+      HELM_PASSWORD: event.project.secrets.helmPassword
+    }
+  )
 }
 
 events.on("brigade.sh/github", "ci:pipeline_requested", async (event) => {
   await Job.sequence(
     Job.concurrent(styleCheckJob(event), lintJob(event), auditJob(event)),
-    buildJob(event)
+    buildJob(event),
+    scanJob(event)
   ).run()
 })
 
