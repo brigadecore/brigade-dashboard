@@ -22,10 +22,10 @@ export default class Home extends React.Component {
           </Col>
         </Row>
         <Row>
-          <Col>
+          <Col lg={6} md={12}>
             <BlogCard />
           </Col>
-          <Col>
+          <Col lg={6} md={12}>
             <ResourcesCard />
             <ContributeCard />
           </Col>
