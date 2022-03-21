@@ -209,10 +209,10 @@ const publishSBOMJobName = "publish-sbom"
 const publishSBOMJob = (event: Event, version: string) => {
   const secrets = event.project.secrets
   const env = {
-    "GITHUB_ORG": secrets.githubOrg,
-    "GITHUB_REPO": secrets.githubRepo,
-    "GITHUB_TOKEN": secrets.githubToken,
-    "VERSION": version
+    GITHUB_ORG: secrets.githubOrg,
+    GITHUB_REPO: secrets.githubRepo,
+    GITHUB_TOKEN: secrets.githubToken,
+    VERSION: version
   }
   if (secrets.stableImageRegistry) {
     env["DOCKER_REGISTRY"] = secrets.stableImageRegistry
@@ -220,7 +220,13 @@ const publishSBOMJob = (event: Event, version: string) => {
   if (secrets.stableImageRegistryOrg) {
     env["DOCKER_ORG"] = secrets.stableImageRegistryOrg
   }
-  return new MakeTargetJob(publishSBOMJobName, ["publish-sbom"], dockerClientImg, event, env)
+  return new MakeTargetJob(
+    publishSBOMJobName,
+    ["publish-sbom"],
+    dockerClientImg,
+    event,
+    env
+  )
 }
 jobs[publishSBOMJobName] = publishSBOMJob
 
