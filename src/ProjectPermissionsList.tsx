@@ -6,7 +6,7 @@ import { Link } from "react-router-dom"
 
 import { authz, core, meta } from "@brigadecore/brigade-sdk"
 
-import getClient from "./Client"
+import { getClient } from "./Utils"
 import withPagingControl from "./components/PagingControl"
 import PrincipalIcon from "./PrincipalIcon"
 

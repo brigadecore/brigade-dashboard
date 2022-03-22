@@ -11,7 +11,7 @@ import { Link, useParams } from "react-router-dom"
 
 import { core } from "@brigadecore/brigade-sdk"
 
-import getClient from "./Client"
+import { getClient } from "./Utils"
 import EventList from "./EventList"
 import ProjectPermissionsList from "./ProjectPermissionsList"
 import SecretsList from "./SecretsList"
