@@ -11,7 +11,7 @@ import { useParams } from "react-router-dom"
 
 import { authn, authz } from "@brigadecore/brigade-sdk"
 
-import getClient from "./Client"
+import { getClient } from "./Utils"
 import LockIcon from "./components/LockIcon"
 import ProjectPermissionsList from "./ProjectPermissionsList"
 import Spinner from "./components/Spinner"
