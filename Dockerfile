@@ -13,7 +13,9 @@ COPY . .
 # Build the react app in production mode. Artifacts will be stored in build/
 RUN yarn build
 
-FROM nginx:1.20.2-alpine
+FROM nginxinc/nginx-unprivileged:1.20.2-alpine
+
+USER root
 
 # Remove default nginx website
 RUN rm /etc/nginx/conf.d/default.conf && rm -rf /usr/share/nginx/html/*
@@ -25,8 +27,8 @@ COPY brigade-dashboard.nginx.conf /etc/nginx/conf.d/brigade-dashboard.conf
 RUN mkdir -p /etc/nginx/brigade-dashboard.conf.d
 
 # Copy build artifacts from build stage
-COPY --from=builder /app/build /usr/share/nginx/brigade-dashboard
+COPY --from=builder --chown=nginx:nginx /app/build /usr/share/nginx/brigade-dashboard
 
-EXPOSE 80
+USER nginx
 
 CMD ["nginx", "-g", "daemon off;"]

@@ -9,13 +9,13 @@ spec:
   ports:
   - name: http
     port: 80
-    targetPort: 80
+    targetPort: 8080
     nodePort: {{ .Values.service.nodePort }}
     protocol: TCP
   {{- if .Values.tls.enabled }}
   - name: https
     port: 443
-    targetPort: 443
+    targetPort: 8443
     nodePort: {{ .Values.service.tlsNodePort }}
     protocol: TCP
   {{- end }}
