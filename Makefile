@@ -64,7 +64,7 @@ build:
 	docker buildx build \
 		-t $(DOCKER_IMAGE_NAME):$(IMMUTABLE_DOCKER_TAG) \
 		-t $(DOCKER_IMAGE_NAME):$(MUTABLE_DOCKER_TAG) \
-		--platform linux/amd64 \
+		--platform linux/amd64,linux/arm64/v8 \
 		.
 
 ################################################################################
@@ -100,7 +100,7 @@ push:
 	docker buildx build \
 		-t $(DOCKER_IMAGE_NAME):$(IMMUTABLE_DOCKER_TAG) \
 		-t $(DOCKER_IMAGE_NAME):$(MUTABLE_DOCKER_TAG) \
-		--platform linux/amd64 \
+		--platform linux/amd64,linux/arm64/v8 \
 		--push \
 		.
 

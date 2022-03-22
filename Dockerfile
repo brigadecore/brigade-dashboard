@@ -1,4 +1,4 @@
-FROM node:16.13.2-alpine3.15 as builder
+FROM --platform=$BUILDPLATFORM node:16.13.2-alpine3.15 as builder
 
 WORKDIR /app
 
@@ -13,7 +13,7 @@ COPY . .
 # Build the react app in production mode. Artifacts will be stored in build/
 RUN yarn build
 
-FROM nginxinc/nginx-unprivileged:1.20.2-alpine
+FROM nginxinc/nginx-unprivileged:1.20.2-alpine as final
 
 USER root
 
