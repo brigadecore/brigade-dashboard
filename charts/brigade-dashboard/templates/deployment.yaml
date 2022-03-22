@@ -79,20 +79,20 @@ spec:
           httpGet:
             path: /
             {{- if .Values.tls.enabled }}
-            port: 443
+            port: 8443
             scheme: HTTPS
             {{- else }}
-            port: 80
+            port: 8080
             {{- end }}
           periodSeconds: 10
         readinessProbe:
           httpGet:
-            port: 80
+            path: /
             {{- if .Values.tls.enabled }}
-            port: 443
+            port: 8443
             scheme: HTTPS
             {{- else }}
-            port: 80
+            port: 8080
             {{- end }}
           periodSeconds: 10
       volumes:
