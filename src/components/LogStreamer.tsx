@@ -2,7 +2,7 @@ import React from "react"
 
 import { core } from "@brigadecore/brigade-sdk"
 
-import getClient from "../Client"
+import { getClient } from "../Utils"
 
 import styles from "./LogStreamer.module.scss"
 

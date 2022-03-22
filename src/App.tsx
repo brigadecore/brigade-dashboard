@@ -8,7 +8,7 @@ import Navbar from "react-bootstrap/Navbar"
 import { LinkContainer } from "react-router-bootstrap"
 import { Outlet } from "react-router-dom"
 
-import getClient from "./Client"
+import { getClient } from "./Utils"
 import * as consts from "./Consts"
 import Home from "./Home"
 import LoginControl from "./LoginControl"

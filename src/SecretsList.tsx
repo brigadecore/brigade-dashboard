@@ -4,7 +4,7 @@ import Table from "react-bootstrap/Table"
 
 import { core, meta } from "@brigadecore/brigade-sdk"
 
-import getClient from "./Client"
+import { getClient } from "./Utils"
 import withPagingControl from "./components/PagingControl"
 
 const secretListPageSize = 20

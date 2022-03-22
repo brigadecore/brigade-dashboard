@@ -8,7 +8,7 @@ import { Link } from "react-router-dom"
 
 import { core, meta } from "@brigadecore/brigade-sdk"
 
-import getClient from "./Client"
+import { getClient } from "./Utils"
 import withPagingControl from "./components/PagingControl"
 import WorkerPhaseIcon from "./WorkerPhaseIcon"
 

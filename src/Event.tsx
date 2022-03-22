@@ -16,7 +16,7 @@ import { Link, useParams } from "react-router-dom"
 
 import { core } from "@brigadecore/brigade-sdk"
 
-import getClient from "./Client"
+import { getClient } from "./Utils"
 import JobPhaseIcon from "./JobPhaseIcon"
 import LogStreamer from "./components/LogStreamer"
 import Spinner from "./components/Spinner"
