@@ -16,7 +16,7 @@ import { Link, useParams } from "react-router-dom"
 
 import { core } from "@brigadecore/brigade-sdk"
 
-import { getClient } from "./Utils"
+import { getClient, getUserID } from "./Utils"
 import JobPhaseIcon from "./JobPhaseIcon"
 import LogStreamer from "./components/LogStreamer"
 import Spinner from "./components/Spinner"
@@ -28,20 +28,37 @@ interface EventProps {
 }
 
 interface EventState {
-  event?: core.Event
+  event?: core.Event,
+  grayedOut: boolean
 }
 
 // TODO: Need to make this component auto-refresh
 class Event extends React.Component<EventProps, EventState> {
   constructor(props: EventProps) {
     super(props)
-    this.state = {}
+    this.state = {
+      grayedOut: true
+    }
   }
 
   async componentDidMount(): Promise<void> {
+    const eventData = await getClient().core().events().get(this.props.id)
+    const projectId = eventData.projectID
+
     this.setState({
-      event: await getClient().core().events().get(this.props.id)
+      event: eventData
     })
+
+    if(projectId) {
+      const authzList = await getClient().core().projects().authz().roleAssignments().list(projectId)
+      const userId = await getUserID()
+
+      for(const authzItem of authzList.items) {
+        if(authzItem.role === "PROJECT_USER" && authzItem?.principal.id === userId) {
+          this.setState({grayedOut: false})
+        }
+      }
+    }
   }
 
   render(): React.ReactElement {
@@ -60,14 +77,14 @@ class Event extends React.Component<EventProps, EventState> {
             <YAMLViewer object={event} />
           </Tab>
           {event.git ? (
-            <Tab eventKey="git-initializer-logs" title="Git Initializer Logs">
+            <Tab eventKey="git-initializer-logs" title="Git Initializer Logs" disabled = {this.state.grayedOut}>
               <LogStreamer event={event} containerName="vcs" logKey="vcs" />
             </Tab>
           ) : null}
-          <Tab eventKey="worker-logs" title="Worker Logs">
+          <Tab eventKey="worker-logs" title="Worker Logs" disabled = {this.state.grayedOut}>
             <LogStreamer event={event} logKey={event?.metadata?.id || ""} />
           </Tab>
-          <Tab eventKey="jobs" title="Jobs">
+          <Tab eventKey="jobs" title="Jobs" disabled = {this.state.grayedOut}>
             <JobTabs event={event} />
           </Tab>
         </Tabs>
