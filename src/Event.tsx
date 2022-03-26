@@ -60,7 +60,7 @@ class Event extends React.Component<EventProps, EventState> {
       )
     this.setState({
       event: event,
-      userHasLogAccess: authzList.items.length > 0
+      userHasLogAccess: authzList.items && authzList.items.length > 0
     })
   }
 
