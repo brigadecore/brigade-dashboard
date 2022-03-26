@@ -14,7 +14,7 @@ import Tabs from "react-bootstrap/Tabs"
 
 import { Link, useParams } from "react-router-dom"
 
-import { core } from "@brigadecore/brigade-sdk"
+import { authz, core } from "@brigadecore/brigade-sdk"
 
 import { getClient, getUserID } from "./Utils"
 import JobPhaseIcon from "./JobPhaseIcon"
@@ -28,7 +28,7 @@ interface EventProps {
 }
 
 interface EventState {
-  event?: core.Event,
+  event?: core.Event
   userHasLogAccess: boolean
 }
 
@@ -43,22 +43,25 @@ class Event extends React.Component<EventProps, EventState> {
 
   async componentDidMount(): Promise<void> {
     const coreClient = getClient().core()
-    const eventData = await coreClient.events().get(this.props.id)
-    const projectId = eventData.projectID
-
+    const event = await coreClient.events().get(this.props.id)
+    const authzList = await coreClient
+      .projects()
+      .authz()
+      .roleAssignments()
+      .list(
+        event.projectID || "", // Project ID will never actually be undefined
+        {
+          principal: {
+            type: authz.PrincipalTypeUser,
+            id: await getUserID()
+          },
+          role: "PROJECT_USER"
+        }
+      )
     this.setState({
-      event: eventData
+      event: event,
+      userHasLogAccess: authzList.items.length > 0
     })
-
-    if(projectId) {
-      const principalData = await getClient().authn().whoAmI()
-      const selector = {role: "PROJECT_USER", principal: principalData}
-      const authzList = await coreClient.projects().authz().roleAssignments().list(projectId, selector)
-
-      if(authzList.items) {
-        this.setState({userHasLogAccess: true})
-      }
-    }
   }
 
   render(): React.ReactElement {
@@ -78,15 +81,23 @@ class Event extends React.Component<EventProps, EventState> {
             <YAMLViewer object={event} />
           </Tab>
           {event.git ? (
-            <Tab eventKey="git-initializer-logs" title="Git Initializer Logs" disabled = {!userHasLogAccess}>
-              <LogStreamer event={event} containerName="vcs" logKey="vcs"/>
+            <Tab
+              eventKey="git-initializer-logs"
+              title="Git Initializer Logs"
+              disabled={!userHasLogAccess}
+            >
+              <LogStreamer event={event} containerName="vcs" logKey="vcs" />
             </Tab>
           ) : null}
-          <Tab eventKey="worker-logs" title="Worker Logs" disabled = {!userHasLogAccess}>
-            <LogStreamer event={event} logKey={event?.metadata?.id || ""}/>
+          <Tab
+            eventKey="worker-logs"
+            title="Worker Logs"
+            disabled={!userHasLogAccess}
+          >
+            <LogStreamer event={event} logKey={event?.metadata?.id || ""} />
           </Tab>
           <Tab eventKey="jobs" title="Jobs">
-            <JobTabs event={event} userHasLogAccess = {userHasLogAccess}/>
+            <JobTabs event={event} userHasLogAccess={userHasLogAccess} />
           </Tab>
         </Tabs>
       </div>
@@ -307,7 +318,7 @@ class EventSummary extends React.Component<EventSummaryProps> {
 }
 
 interface JobTabsProps {
-  event: core.Event,
+  event: core.Event
   userHasLogAccess: boolean
 }
 
@@ -343,7 +354,12 @@ class JobTabs extends React.Component<JobTabsProps> {
             <Tab.Content>
               {jobs.map((job: core.Job) => (
                 <Tab.Pane eventKey={job.name} mountOnEnter>
-                  <JobTabPane key={job.name} event={event} job={job} userHasLogAccess = {userHasLogAccess} />
+                  <JobTabPane
+                    key={job.name}
+                    event={event}
+                    job={job}
+                    userHasLogAccess={userHasLogAccess}
+                  />
                 </Tab.Pane>
               ))}
             </Tab.Content>
@@ -389,7 +405,11 @@ class JobTabPane extends React.Component<JobTabPaneProps> {
             <YAMLViewer object={job} />
           </Tab>
           {usesSource ? (
-            <Tab eventKey="git-initializer-logs" title="Git Initializer Logs" disabled = {!userHasLogAccess}>
+            <Tab
+              eventKey="git-initializer-logs"
+              title="Git Initializer Logs"
+              disabled={!userHasLogAccess}
+            >
               <LogStreamer
                 event={event}
                 jobName={job.name}
@@ -398,12 +418,20 @@ class JobTabPane extends React.Component<JobTabPaneProps> {
               />
             </Tab>
           ) : null}
-          <Tab eventKey={job.name} title={`${job.name} Logs`} disabled = {!userHasLogAccess}>
+          <Tab
+            eventKey={job.name}
+            title={`${job.name} Logs`}
+            disabled={!userHasLogAccess}
+          >
             <LogStreamer event={event} jobName={job.name} logKey={job.name} />
           </Tab>
           {Object.keys(job.spec.sidecarContainers || {}).map(
             (containerName: string) => (
-              <Tab eventKey={containerName} title={`${containerName} Logs`} disabled = {!userHasLogAccess}>
+              <Tab
+                eventKey={containerName}
+                title={`${containerName} Logs`}
+                disabled={!userHasLogAccess}
+              >
                 <LogStreamer
                   event={event}
                   jobName={job.name}
