@@ -51,20 +51,12 @@ class Event extends React.Component<EventProps, EventState> {
     })
 
     if(projectId) {
-      const authzList = await coreClient.projects().authz().roleAssignments().list(projectId)
-      const userId = await getUserID()
-      let logAccessEnabled = false
+      const principalData = await getClient().authn().whoAmI()
+      const selector = {role: "PROJECT_USER", principal: principalData}
+      const authzList = await coreClient.projects().authz().roleAssignments().list(projectId, selector)
 
-      for(const authzItem of authzList.items) {
-        if(authzItem.role === "PROJECT_USER" && authzItem?.principal.id === userId) {
-          this.setState({userHasLogAccess: true})
-          logAccessEnabled = true
-          break
-        }
-      }
-
-      if(!logAccessEnabled) {
-        this.setState({userHasLogAccess: false})
+      if(authzList.items) {
+        this.setState({userHasLogAccess: true})
       }
     }
   }
