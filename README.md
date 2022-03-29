@@ -29,7 +29,7 @@ Your mileage may vary.
 
    ```shell
    $ helm inspect values oci://ghcr.io/brigadecore/brigade-dashboard \
-       --version v0.1.0 > ~/brigade-dashboard-values.yaml
+       --version v0.2.0 > ~/brigade-dashboard-values.yaml
    ```
 
 1. Edit `~/brigade-dashboard-values.yaml`, making the following changes:
@@ -63,7 +63,7 @@ Your mileage may vary.
    ```shell
    $ helm install brigade-dashboard \
        oci://ghcr.io/brigadecore/brigade-dashboard \
-       --version v0.1.0 \
+       --version v0.2.0 \
        --create-namespace \
        --namespace brigade-dashboard \
        --values ~/brigade-dashboard-values.yaml \
