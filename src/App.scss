@@ -10,8 +10,16 @@ $text: #647b83;
 $work: "work_sansregular", "Work Sans", "Helvetica Neue", Helvetica, Arial,
   Geneva, sans-serif;
 
+html {
+  height: 100%;
+}
+
 body {
   font-family: $work !important;
+  position: relative;
+  margin: 0;
+  padding-bottom: 5rem;
+  min-height: 100%;
 }
 
 a:not(.nav-link) {
@@ -72,4 +80,17 @@ a:not(.nav-link) {
   td {
     color: $text !important;
   }
+}
+
+footer {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  background-color: #212529;
+  color: #6c757d;
+  min-height: 50px;
+  padding: 0 5%;
+  display: flex;
+  align-items: center;
 }

@@ -96,13 +96,7 @@ export default class App extends React.Component<unknown, AppState> {
           </Container>
         </main>
         <footer>
-          <Navbar bg="dark" variant="dark" expand="lg">
-            <Container>
-              <span className="text-muted">
-                &copy; 2022 The Brigade Authors
-              </span>
-            </Container>
-          </Navbar>
+          <span>&copy; 2022 The Brigade Authors</span>
         </footer>
       </Fragment>
     )
