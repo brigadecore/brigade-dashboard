@@ -63,6 +63,9 @@ a:not(.nav-link) {
       cursor: pointer;
     }
   }
+  .disabled {
+    color: $text !important;
+  }
 }
 
 .nav-pills .nav-link.active {
