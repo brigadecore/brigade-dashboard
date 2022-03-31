@@ -1,7 +1,7 @@
 import { Container, events, Event, Job } from "@brigadecore/brigadier"
 
 const dindImg = "docker:20.10.9-dind"
-const dockerClientImg = "brigadecore/docker-tools:v0.3.0"
+const dockerClientImg = "brigadecore/docker-tools:v0.4.0"
 const helmImg = "brigadecore/helm-tools:v0.4.0"
 const localPath = "/workspaces/brigade-github-gateway"
 const nodeImg = "node:16.13.2-alpine3.15"
