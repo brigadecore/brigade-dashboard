@@ -49,12 +49,10 @@ spec:
   selector:
     matchLabels:
       {{- include "dashboard.selectorLabels" . | nindent 6 }}
-      {{- include "dashboard.labels" . | nindent 6 }}
   template:
     metadata:
       labels:
         {{- include "dashboard.selectorLabels" . | nindent 8 }}
-        {{- include "dashboard.labels" . | nindent 8 }}
       annotations:
         checksum/configmap: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
         {{- if and .Values.tls.enabled (or .Values.tls.generateSelfSignedCert .Values.tls.cert) }}
