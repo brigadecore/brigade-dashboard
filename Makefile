@@ -1,6 +1,6 @@
 SHELL ?= /bin/bash
 
-.DEFAULT_GOAL := build
+.DEFAULT_GOAL := push
 
 ################################################################################
 # Version details                                                              #
@@ -54,18 +54,6 @@ lint-chart:
 		helm dep up && \
 		helm lint . \
 	'
-
-################################################################################
-# Build
-################################################################################
-
-.PHONY: build
-build:
-	docker buildx build \
-		-t $(DOCKER_IMAGE_NAME):$(IMMUTABLE_DOCKER_TAG) \
-		-t $(DOCKER_IMAGE_NAME):$(MUTABLE_DOCKER_TAG) \
-		--platform linux/amd64,linux/arm64/v8 \
-		.
 
 ################################################################################
 # Image security                                                               #
@@ -122,42 +110,3 @@ publish-chart:
 		helm package . --version $(VERSION) --app-version $(VERSION) && \
 		helm push brigade-dashboard-$(VERSION).tgz oci://$(HELM_REGISTRY)$(HELM_ORG) \
 	'
-
-################################################################################
-# Targets to facilitate hacking                                                #
-################################################################################
-
-.PHONY: hack-build
-hack-build:
-	docker build \
-		-t $(DOCKER_IMAGE_NAME):$(IMMUTABLE_DOCKER_TAG) \
-		-t $(DOCKER_IMAGE_NAME):$(MUTABLE_DOCKER_TAG) \
-		--build-arg VERSION='$(VERSION)' \
-		--build-arg COMMIT='$(GIT_VERSION)' \
-		.
-
-.PHONY: hack-push
-hack-push: hack-build
-	docker push $(DOCKER_IMAGE_NAME):$(IMMUTABLE_DOCKER_TAG)
-	docker push $(DOCKER_IMAGE_NAME):$(MUTABLE_DOCKER_TAG)
-
-IMAGE_PULL_POLICY ?= Always
-
-.PHONY: hack-deploy
-hack-deploy:
-ifndef REACT_APP_BRIGADE_API_ADDRESS
-	@echo "REACT_APP_BRIGADE_API_ADDRESS must be defined" && false
-endif
-	helm dep up charts/brigade-dashboard && \
-	helm upgrade brigade-dashboard charts/brigade-dashboard \
-		--install \
-		--create-namespace \
-		--namespace brigade-dashboard \
-		--timeout 60s \
-		--set image.repository=$(DOCKER_IMAGE_NAME) \
-		--set image.tag=$(IMMUTABLE_DOCKER_TAG) \
-		--set image.pullPolicy=$(IMAGE_PULL_POLICY) \
-		--set brigade.apiAddress=$(REACT_APP_BRIGADE_API_ADDRESS)
-
-.PHONY: hack
-hack: hack-push hack-deploy
