@@ -10,9 +10,16 @@ $text: #647b83;
 $work: "work_sansregular", "Work Sans", "Helvetica Neue", Helvetica, Arial,
   Geneva, sans-serif;
 
+html {
+  height: 100%;
+}
+
 body {
   font-family: $work !important;
-  padding-bottom: 80px;
+  position: relative;
+  margin: 0;
+  padding-bottom: 5rem;
+  min-height: 100%;
 }
 
 a:not(.nav-link) {
@@ -76,4 +83,11 @@ a:not(.nav-link) {
   td {
     color: $text !important;
   }
+}
+
+footer {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  left: 0;
 }
